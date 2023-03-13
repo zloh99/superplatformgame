@@ -20,13 +20,20 @@ import com.example.superplatformgame.gamepanel.ButtonJump;
 import com.example.superplatformgame.gamepanel.ButtonLeft;
 import com.example.superplatformgame.gamepanel.ButtonRight;
 import com.example.superplatformgame.gamepanel.Performance;
+import com.example.superplatformgame.graphics.SkyBox;
 import com.example.superplatformgame.graphics.SpriteSheet;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Player player;
     private GameLoop gameLoop;
     private Performance performance;
     private GameCamera gameCamera;
+    //private SkyBox skyBox;
+    private List<SkyBox> skyBoxList = new ArrayList<SkyBox>(); //list to keep track of how many skybox objects there are
     private final ButtonLeft buttonLeft;
     private int buttonLeftId = 0;
     private final ButtonRight buttonRight;
@@ -48,9 +55,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Initialise game panels (all graphical objects that do not interact with any game objects)
         performance = new Performance(context, gameLoop);
-        buttonLeft = new ButtonLeft(context, 250, 750, 100);
-        buttonRight = new ButtonRight(context, 500, 750, 100);
-        buttonJump = new ButtonJump(context, 500, 750, 100);
+        buttonLeft = new ButtonLeft(context, 100, 850, 150, 150);
+        buttonRight = new ButtonRight(context, 300, 850, 150, 150);
+        buttonJump = new ButtonJump(context, 1850, 860, 140, 140);
 
         //Initialise game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
@@ -61,6 +68,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         gameCamera = new GameCamera(displayMetrics.widthPixels, displayMetrics.heightPixels, player);
+
+        //Initialise game graphics
+        skyBoxList.add(new SkyBox(spriteSheet));
 
         setFocusable(true);
     }
@@ -133,6 +143,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
+        //draw skybox
+        for (SkyBox skyBox: skyBoxList) {
+            skyBox.draw(canvas, gameCamera, skyBoxList.indexOf(skyBox)* skyBox.getWidth(), 0);
+        }
+        //Log.d("Game.java", "skyBoxList size: " + skyBoxList.size());
+
+
         //Draw game objects
         player.draw(canvas, gameCamera);
 
@@ -151,8 +168,16 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //update game state
         player.update();
 
+        //spawn new skybox if camera isn't wholly contained in one
+        if (gameCamera.getScreenRight() >= skyBoxList.size()*2560) {
+            skyBoxList.add(new SkyBox(new SpriteSheet(getContext())));
+            Log.d("Game.java", "Add Skybox");
+        }
+
+
         //update game panel
 
+        //update gameCamera after all other updates
         gameCamera.update();
     }
 

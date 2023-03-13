@@ -1,6 +1,7 @@
 package com.example.superplatformgame;
 
 import android.graphics.Rect;
+import android.graphics.Region;
 
 import com.example.superplatformgame.gameobject.GameObject;
 
@@ -32,11 +33,17 @@ public class GameCamera {
 
 
     public void update() {
-        gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around
-        gameCenterY = centerObject.getPositionY();
+        if (getPlayerLeft() <= 0) {
+            gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around
+            gameCenterY = centerObject.getPositionY();
+        }
+        else {
+            gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around
+            gameCenterY = centerObject.getPositionY();
 
-        gameToDisplayCoordinateOffsetX = displayCenterX - gameCenterX;
-        gameToDisplayCoordinateOffsetY = displayCenterY - gameCenterY;
+            gameToDisplayCoordinateOffsetX = displayCenterX - gameCenterX;
+            gameToDisplayCoordinateOffsetY = displayCenterY - gameCenterY;
+        }
     }
     public double gameToDisplayCoordinatesX(double x) {
         return x + gameToDisplayCoordinateOffsetX;
@@ -54,4 +61,13 @@ public class GameCamera {
                 (int) (gameCenterY + heightPixels/2)
         );
     }
+
+    public int getScreenRight() {
+        return (int) gameCenterX + widthPixels/2 + 200;
+    }
+
+    public int getPlayerLeft() {
+        return (int) centerObject.getPositionX() - widthPixels/2;
+    }
+
 }

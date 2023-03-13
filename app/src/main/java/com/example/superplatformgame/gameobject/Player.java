@@ -62,6 +62,7 @@ public class Player extends Hitbox {
 
         //update player position
         positionX += velocityX;
+        //Log.d("Player.java", "positionX: " + Double.toString(positionX));
 
         //update player direction
 

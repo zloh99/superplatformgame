@@ -77,8 +77,8 @@ public class Animator {
         //draw sprite based on player location
         sprite.drawRight(
                 canvas,
-                (int) player.getPositionX() - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-                (int) player.getPositionY() - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
+                (int) gameCamera.gameToDisplayCoordinatesX(player.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
+                (int) gameCamera.gameToDisplayCoordinatesY(player.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
         );
     }
 
@@ -86,8 +86,8 @@ public class Animator {
         //draw sprite based on player location
         sprite.drawLeft(
                 canvas,
-                (int) player.getPositionX() - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-                (int) player.getPositionY() - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
+                (int) gameCamera.gameToDisplayCoordinatesX(player.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
+                (int) gameCamera.gameToDisplayCoordinatesY(player.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
         );
     }
 }

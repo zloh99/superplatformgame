@@ -28,12 +28,12 @@ public class ButtonRight extends Buttons{
     private Bitmap bitmap;
     private State state;
     private Rect rect;
-    private Rect buttonPosition = new Rect(242, 800, 484, 1030);
+    private Rect buttonPosition; // = new Rect(242, 800, 484, 1030);
     private Region region;
 
 
-    public ButtonRight(Context context, double positionX, double positionY, double width) {
-        super(context, positionX, positionY, width);
+    public ButtonRight(Context context, double positionX, double positionY, double width, double height) {
+        super(context, positionX, positionY, width, height);
         //Define paint object
         paint = new Paint();
         paint.setColor(ContextCompat.getColor(context, R.color.button));
@@ -47,7 +47,7 @@ public class ButtonRight extends Buttons{
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.button_right, bitmapOptions);
 
         //initialise rect and region object to detect touch events
-        this.rect =new Rect();
+        buttonPosition = new Rect((int) positionX, (int) positionY, (int) (positionX+width), (int) (positionY+height));
         this.region = new Region(buttonPosition);
 
     }

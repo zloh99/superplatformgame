@@ -12,11 +12,13 @@ import com.example.superplatformgame.GameCamera;
 public abstract class Buttons {
     protected double positionX, positionY = 0.0;
     protected double width;
+    protected double height;
 
-    public Buttons(Context context, double positionX, double positionY, double width) {
+    public Buttons(Context context, double positionX, double positionY, double width, double height) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.width = width;
+        this.height = height;
     }
 
     public abstract void draw(Canvas canvas);

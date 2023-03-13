@@ -1,10 +1,12 @@
 package com.example.superplatformgame.graphics;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
 
 import com.example.superplatformgame.R;
 
@@ -15,18 +17,28 @@ import com.example.superplatformgame.R;
 public class SpriteSheet {
     private static final int SPRITE_WIDTH_PIXELS = 96;
     private static final int SPRITE_HEIGHT_PIXELS = 120;
+    public static final int SKYBOX_WIDTH_PIXELS = 256;
+    public static final int SKYBOX_HEIGHT_PIXELS = 128;
     //bitmap = 2d array of pixels, with each pixel having 3 values: R, G, and B
     private Bitmap playerBitmapRight;
     private Bitmap playerBitmapLeft;
+    private Bitmap skyBitmap;;
+    private Bitmap scaledSkyBitmap;
     private Matrix matrix;
 
     public SpriteSheet(Context context) {
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inScaled = false;
         playerBitmapRight = BitmapFactory.decodeResource(context.getResources(), R.drawable.green_alien_big, bitmapOptions);
-        Matrix matrix = new Matrix();
+        this.matrix = new Matrix();
         matrix.preScale(-1, 1);
         playerBitmapLeft = Bitmap.createBitmap(playerBitmapRight, 0, 0, playerBitmapRight.getWidth(), playerBitmapRight.getHeight(), matrix, true);
+
+        //create and scale sky bitmap
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        skyBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.skybox_blue, bitmapOptions);
+        scaledSkyBitmap = scaleBitmap(skyBitmap,10*SKYBOX_HEIGHT_PIXELS, 10*SKYBOX_WIDTH_PIXELS);
     }
 
     public Sprite[] getPlayerSpriteArray() {
@@ -53,6 +65,15 @@ public class SpriteSheet {
     public Bitmap getBitmapLeft() {
         return playerBitmapLeft;
     }
+    public Bitmap getSkyBitmap() {
+        return scaledSkyBitmap;
+    }
+    public int getSkyBitmapWidth() {
+        return scaledSkyBitmap.getWidth();
+    }
+    public int getSkyBitmapHeight() {
+        return scaledSkyBitmap.getHeight();
+    }
 
     private Sprite getSpriteByIndex(int idxRow, int idxCol) {
         return new Sprite(this, new Rect(
@@ -61,6 +82,19 @@ public class SpriteSheet {
                 (idxCol + 1)*SPRITE_WIDTH_PIXELS,
                 (idxRow + 1)*SPRITE_HEIGHT_PIXELS
         ));
+    }
+
+    private Bitmap scaleBitmap(Bitmap bitmap, int newHeight, int newWidth) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        float scaleWidth = ((float) newWidth)/width;
+        float scaleHeight = ((float) newHeight)/height;
+        //create matrix for bitmap transformation
+        matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        //transform bitmap
+        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, false);
+        return resizedBitmap;
     }
 
 }
