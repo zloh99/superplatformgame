@@ -45,6 +45,8 @@ public class GameCamera {
             gameToDisplayCoordinateOffsetY = displayCenterY - gameCenterY;
         }
     }
+
+    //remember to put these methods over any X and Y coordinates that are not fixed to the camera, these 2 methods are to account for the offset
     public double gameToDisplayCoordinatesX(double x) {
         return x + gameToDisplayCoordinateOffsetX;
     }

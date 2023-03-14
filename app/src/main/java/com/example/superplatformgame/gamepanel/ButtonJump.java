@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
@@ -64,7 +65,6 @@ public class ButtonJump extends Buttons{
 
     public boolean isPressed(double touchPositionX, double touchPositionY) {
         //check if touch X and Y coordinates are within the button
-        //reminder to tomorrow me: just draw an image for the button and draw a region over it
         if (region.contains((int) touchPositionX, (int) touchPositionY)) {
             return true;
         }
@@ -75,9 +75,11 @@ public class ButtonJump extends Buttons{
     public void setIsPressed(boolean value) {
         if (value) {
             state = State.PRESSED;
+            Log.d("ButtonDown.java", "State.PRESSED");
         }
         else {
             state = State.NOT_PRESSED;
+            Log.d("ButtonLeft.java", "State.NOT_PRESSED");
         }
     }
 
