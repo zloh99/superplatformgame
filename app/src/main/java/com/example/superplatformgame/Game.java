@@ -16,12 +16,15 @@ import androidx.annotation.NonNull;
 import com.example.superplatformgame.gameobject.Animator;
 import com.example.superplatformgame.gameobject.GameObject;
 import com.example.superplatformgame.gameobject.Player;
+import com.example.superplatformgame.gameobject.PlayerState;
 import com.example.superplatformgame.gamepanel.ButtonJump;
 import com.example.superplatformgame.gamepanel.ButtonLeft;
 import com.example.superplatformgame.gamepanel.ButtonRight;
 import com.example.superplatformgame.gamepanel.Performance;
 import com.example.superplatformgame.graphics.SkyBox;
 import com.example.superplatformgame.graphics.SpriteSheet;
+import com.example.superplatformgame.map.MapLayout;
+import com.example.superplatformgame.map.Tilemap;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,6 +37,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private GameCamera gameCamera;
     //private SkyBox skyBox;
     private List<SkyBox> skyBoxList = new ArrayList<SkyBox>(); //list to keep track of how many skybox objects there are
+    private Tilemap tileMap;
     private final ButtonLeft buttonLeft;
     private int buttonLeftId = 0;
     private final ButtonRight buttonRight;
@@ -62,7 +66,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Initialise game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
         Animator animator = new Animator(spriteSheet.getPlayerSpriteArray());
-        player = new Player(context, buttonLeft, buttonRight, buttonJump, 2*500, 500, 32, animator);
+        player = new Player(context, buttonLeft, buttonRight, buttonJump, 1400, 200, 32, animator);
 
         //Initialise game display and center it around the player
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -71,6 +75,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Initialise game graphics
         skyBoxList.add(new SkyBox(spriteSheet));
+        tileMap = new Tilemap(spriteSheet);
 
         setFocusable(true);
     }
@@ -143,11 +148,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        //draw skybox
+        //draw skybox first
         for (SkyBox skyBox: skyBoxList) {
             skyBox.draw(canvas, gameCamera, skyBoxList.indexOf(skyBox)* skyBox.getWidth(), 0);
         }
         //Log.d("Game.java", "skyBoxList size: " + skyBoxList.size());
+
+        //draw tilemap
+        tileMap.draw(canvas, gameCamera);
 
 
         //Draw game objects
@@ -166,12 +174,32 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public void update() {
 
         //update game state
-        player.update();
+        player.update(gameCamera, tileMap);
 
         //spawn new skybox if camera isn't wholly contained in one
         if (gameCamera.getScreenRight() >= skyBoxList.size()*2560) {
             skyBoxList.add(new SkyBox(new SpriteSheet(getContext())));
             Log.d("Game.java", "Add Skybox");
+        }
+
+        //Check for collision in X
+/*        if(tileMap.isColliding(player, gameCamera, true, false)) {
+            player.moveBackX();
+            Log.d("Game.java", "collisionStatusX = true");
+        }*/
+
+        //check for collision in Y
+        if(!tileMap.isColliding(player, gameCamera, false, true)) {
+            //Log.d("Game.java", "collisionStatusY = false");
+            player.setIsAirborne(true);
+            //Log.d("Game.java", "Airborne = true");
+        }
+
+        if(tileMap.isColliding(player, gameCamera, false, true)) {
+            //Log.d("Game.java", "collisionStatusY = true");
+            player.setIsAirborne(false);
+            player.moveBackY();
+            player.setPlayerVelocityY(0);
         }
 
 

@@ -84,11 +84,11 @@ public class ButtonRight extends Buttons{
     public void setIsPressed(boolean value) {
         if (value) {
             state = State.PRESSED;
-            Log.d("ButtonRight.java", "State.PRESSED");
+            //Log.d("ButtonRight.java", "State.PRESSED");
         }
         else {
             state = State.NOT_PRESSED;
-            Log.d("ButtonRight.java", "State.NOT_PRESSED");
+            //Log.d("ButtonRight.java", "State.NOT_PRESSED");
         }
     }
 

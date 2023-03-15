@@ -15,15 +15,26 @@ import com.example.superplatformgame.R;
  * The sprite object is then returned to the Player object, which then draws it to the screen
  */
 public class SpriteSheet {
-    private static final int SPRITE_WIDTH_PIXELS = 96;
-    private static final int SPRITE_HEIGHT_PIXELS = 120;
+    public static final int SPRITE_WIDTH_PIXELS = 96;
+    public static final int SPRITE_HEIGHT_PIXELS = 120;
     public static final int SKYBOX_WIDTH_PIXELS = 256;
     public static final int SKYBOX_HEIGHT_PIXELS = 128;
+
+    public static final int GRASSTILES_WIDTH_PIXELS = 48;
+
+    public static final int GRASSTILES_HEIGHT_PIXELS = 32;
+
+    public static final int TILE_SCALE_FACTOR = 5;
+    public static final int TILE_WIDTH_PIXELS = GRASSTILES_WIDTH_PIXELS * TILE_SCALE_FACTOR;
+    public static final int TILE_HEIGHT_PIXELS = GRASSTILES_HEIGHT_PIXELS * TILE_SCALE_FACTOR;
     //bitmap = 2d array of pixels, with each pixel having 3 values: R, G, and B
     private Bitmap playerBitmapRight;
     private Bitmap playerBitmapLeft;
     private Bitmap skyBitmap;;
     private Bitmap scaledSkyBitmap;
+
+    private Bitmap grassTileBitmap;
+    private Bitmap scaledGrassTileBitmap;
     private Matrix matrix;
 
     public SpriteSheet(Context context) {
@@ -39,8 +50,13 @@ public class SpriteSheet {
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         skyBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.skybox_blue, bitmapOptions);
         scaledSkyBitmap = scaleBitmap(skyBitmap,10*SKYBOX_HEIGHT_PIXELS, 10*SKYBOX_WIDTH_PIXELS);
+
+        //create grass tiles bitmap
+        grassTileBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.grass_tiles_new, bitmapOptions);
+        scaledGrassTileBitmap = scaleBitmap(grassTileBitmap,TILE_SCALE_FACTOR*grassTileBitmap.getHeight(), TILE_SCALE_FACTOR*grassTileBitmap.getWidth());
     }
 
+    //get methods for player sprite bitmap
     public Sprite[] getPlayerSpriteArray() {
         //method for selecting the bitmap for the player's sprite
         Sprite[] spriteArray = new Sprite[11];
@@ -61,10 +77,11 @@ public class SpriteSheet {
     public Bitmap getBitmapRight() {
         return playerBitmapRight;
     }
-
     public Bitmap getBitmapLeft() {
         return playerBitmapLeft;
     }
+
+    //get methods for skybox bitmap
     public Bitmap getSkyBitmap() {
         return scaledSkyBitmap;
     }
@@ -75,12 +92,16 @@ public class SpriteSheet {
         return scaledSkyBitmap.getHeight();
     }
 
-    private Sprite getSpriteByIndex(int idxRow, int idxCol) {
+    //get methods for tilemap bitmaps
+    public Bitmap getGrassTileBitmap() {return scaledGrassTileBitmap;}
+
+    private Sprite getGrassTileByIndex(int idxRow, int idxCol) {
+        //0,0 = sky, 0,1 = dirt, 0,2 = grass topper
         return new Sprite(this, new Rect(
-                idxCol*SPRITE_WIDTH_PIXELS,
-                idxRow*SPRITE_HEIGHT_PIXELS,
-                (idxCol + 1)*SPRITE_WIDTH_PIXELS,
-                (idxRow + 1)*SPRITE_HEIGHT_PIXELS
+                idxCol*GRASSTILES_WIDTH_PIXELS,
+                idxRow*GRASSTILES_HEIGHT_PIXELS,
+                (idxCol + 1)*GRASSTILES_WIDTH_PIXELS,
+                (idxRow + 1)*GRASSTILES_HEIGHT_PIXELS
         ));
     }
 
