@@ -16,7 +16,6 @@ import com.example.superplatformgame.gamepanel.ButtonJump;
 import com.example.superplatformgame.gamepanel.ButtonLeft;
 import com.example.superplatformgame.gamepanel.ButtonRight;
 import com.example.superplatformgame.graphics.SpriteSheet;
-import com.example.superplatformgame.map.MapLayout;
 import com.example.superplatformgame.map.Tilemap;
 
 /**
@@ -27,8 +26,9 @@ import com.example.superplatformgame.map.Tilemap;
 public class Player extends Hitbox {
     public static final double SPEED_PIXELS_PER_SECOND = 30.0;
     public static final double MAX_SPEED = SPEED_PIXELS_PER_SECOND / GameLoop.MAX_UPS; //pixels/s divided by updates/s = pixels/update
-    public static final double GRAVITY = 10; // acceleration due to gravity
+    public static final double GRAVITY = 5; // acceleration due to gravity
     public static final double BOUNCE_FACTOR = 0.7; // scale of how much the player bounces off the walls
+    public static final double JUMP_SPEED = 60;
     private final ButtonLeft buttonLeft;
     private final ButtonRight buttonRight;
     private final ButtonJump buttonJump;
@@ -123,18 +123,19 @@ public class Player extends Hitbox {
             velocityX = 0;
         }
         if (buttonJump.getState()) {
-                gravity = -10;
+            if (velocityY == 0) {
+                velocityY -= JUMP_SPEED;
+            }
         } else {
-            gravity = GRAVITY;
-            velocityY = 0;
+
         }
 
         //Log.d("Player.java", "VelocityX: " + velocityX + ", VelocityY: " + velocityY);
 
         //apply gravity
-        velocityY += gravity;
+        velocityY += GRAVITY;
         //Log.d("Player.java", "Gravity applied");
-
+        //Log.d("Player.java", "Gravity:" + gravity);
 
         //update player position
         previousPositionX = positionX;
