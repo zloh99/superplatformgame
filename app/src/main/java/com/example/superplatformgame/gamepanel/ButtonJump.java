@@ -75,11 +75,11 @@ public class ButtonJump extends Buttons{
     public void setIsPressed(boolean value) {
         if (value) {
             state = State.PRESSED;
-            Log.d("ButtonDown.java", "State.PRESSED");
+            //Log.d("ButtonDown.java", "State.PRESSED");
         }
         else {
             state = State.NOT_PRESSED;
-            Log.d("ButtonLeft.java", "State.NOT_PRESSED");
+            //Log.d("ButtonLeft.java", "State.NOT_PRESSED");
         }
     }
 

@@ -174,7 +174,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public void update() {
 
         //update game state
-        player.update(gameCamera);
+        player.update(gameCamera, tileMap);
 
         //spawn new skybox if camera isn't wholly contained in one
         if (gameCamera.getScreenRight() >= skyBoxList.size()*2560) {
@@ -183,13 +183,25 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         //Check for collision in X
-        if(tileMap.isColliding(player, gameCamera, true, false)) {
+/*        if(tileMap.isColliding(player, gameCamera, true, false)) {
             player.moveBackX();
-        };
+            Log.d("Game.java", "collisionStatusX = true");
+        }*/
+
         //check for collision in Y
+        if(!tileMap.isColliding(player, gameCamera, false, true)) {
+            //Log.d("Game.java", "collisionStatusY = false");
+            player.setIsAirborne(true);
+            //Log.d("Game.java", "Airborne = true");
+        }
+
         if(tileMap.isColliding(player, gameCamera, false, true)) {
+            //Log.d("Game.java", "collisionStatusY = true");
+            player.setIsAirborne(false);
             player.moveBackY();
-        };
+            player.setPlayerVelocityY(0);
+        }
+
 
         //update game panel
 

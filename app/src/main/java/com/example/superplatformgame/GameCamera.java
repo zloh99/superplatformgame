@@ -36,6 +36,8 @@ public class GameCamera {
         if (getPlayerLeft() <= 0) {
             gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around
             gameCenterY = centerObject.getPositionY();
+
+            gameToDisplayCoordinateOffsetY = displayCenterY - gameCenterY;
         }
         else {
             gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around

@@ -6,6 +6,7 @@ import android.graphics.Paint;
 
 import com.example.superplatformgame.GameCamera;
 import com.example.superplatformgame.map.MapLayout;
+import com.example.superplatformgame.map.Tilemap;
 
 /**
  * Hitbox is an abstract class which implements a draw method from
@@ -40,7 +41,9 @@ public abstract class Hitbox extends GameObject {
         return radius;
     }
 
-    public abstract void update(GameCamera gameCamera);
+    //public abstract void update(GameCamera gameCamera);
+
+    public abstract void update(GameCamera gameCamera, Tilemap tileMap);
 
     public void draw(Canvas canvas, GameCamera gameCamera) {
         canvas.drawCircle(
