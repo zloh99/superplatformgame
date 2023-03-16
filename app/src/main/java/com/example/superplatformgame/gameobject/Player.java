@@ -62,8 +62,6 @@ public class Player extends Hitbox {
         gravity = GRAVITY;
     }
 
-
-
     public void setPlayerVelocityX(double x) {
         velocityX = x;
     }
