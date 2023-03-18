@@ -10,11 +10,11 @@ import com.example.superplatformgame.graphics.Sprite;
  */
 public class Animator {
 
-    private static final int MAX_UPDATES_BEFORE_NEXT_MOVE_FRAME = 5;
+    private static final int MAX_UPDATES_BEFORE_NEXT_MOVE_FRAME = 5; //control how fast different frames are animated
     private Sprite[] playerSpriteArray;
-    private int idxNotMovingFrameRight = 1;
-    private int idxNotMovingFrameLeft = 9;
-    private int idxMovingFrame = 2;
+    private int idxNotMovingFrameRight = 1; //index of the idle frame when player is facing right
+    private int idxNotMovingFrameLeft = 9; //index of the idle frame when player is facing left
+    private int idxMovingFrame = 2; //index of the moving frame
     private int updatesBeforeNextMoveFrame;
 
     public Animator(Sprite[] playerSpriteArray) {
@@ -58,6 +58,7 @@ public class Animator {
     }
 
     private void toggleIdxMovingFrameLeft() {
+        //every update loop, if player is moving, then alternate between 2 different frames
         if (idxMovingFrame == 8) {
             idxMovingFrame = 0;
         }
@@ -66,6 +67,7 @@ public class Animator {
     }
 
     private void toggleIdxMovingFrameRight() {
+        //every update loop, if player is moving, then alternate between 2 different frames
         if (idxMovingFrame == 2) {
             idxMovingFrame = 10;
         }

@@ -34,13 +34,15 @@ public class GameCamera {
 
     public void update() {
         if (getPlayerLeft() <= 0) {
+            //if player is towards the leftmost side of the map, then do not fix camera.
             gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around
             gameCenterY = centerObject.getPositionY();
 
             gameToDisplayCoordinateOffsetY = displayCenterY - gameCenterY;
         }
         else {
-            gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around
+            //if player is away from the leftmost side of the map, then fix camera.
+            gameCenterX = centerObject.getPositionX();
             gameCenterY = centerObject.getPositionY();
 
             gameToDisplayCoordinateOffsetX = displayCenterX - gameCenterX;

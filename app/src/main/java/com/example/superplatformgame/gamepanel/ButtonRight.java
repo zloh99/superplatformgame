@@ -28,7 +28,7 @@ public class ButtonRight extends Buttons{
     private Bitmap bitmap;
     private State state;
     private Rect rect;
-    private Rect buttonPosition; // = new Rect(242, 800, 484, 1030);
+    private Rect buttonPosition;
     private Region region;
 
 

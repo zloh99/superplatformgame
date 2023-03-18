@@ -11,6 +11,9 @@ import com.example.superplatformgame.GameCamera;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * SkyBox is the class that handles the drawing of skyboxes to the canvas.
+ */
 public class SkyBox {
     private Bitmap skyBitmap;
     private SpriteSheet spriteSheet;
