@@ -31,7 +31,6 @@ public class GameCamera {
         displayCenterY = heightPixels/2.0;
     }
 
-
     public void update() {
         if (getPlayerLeft() <= 0) {
             gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around
