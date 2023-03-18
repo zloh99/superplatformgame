@@ -193,6 +193,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             //Log.d("Game.java", "collisionStatusY = false");
             player.setIsAirborne(true);
             //Log.d("Game.java", "Airborne = true");
+            player.setHealthHearts(player.getHealthHearts() - 1);
         }
 
         if(tileMap.isColliding(player, gameCamera, false, true)) {
@@ -200,6 +201,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             player.setIsAirborne(false);
             player.moveBackY();
             player.setPlayerVelocityY(0);
+            player.setHealthHearts(player.getHealthHearts() - 1);
         }
 
 

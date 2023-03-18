@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
+import androidx.appcompat.graphics.drawable.DrawableContainerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.superplatformgame.GameCamera;
@@ -24,6 +25,8 @@ import com.example.superplatformgame.map.Tilemap;
  */
 
 public class Player extends Hitbox {
+    public static final int MAX_HEALTH_HEARTS = 3;
+    private int healthHeartNum;
     public static final double SPEED_PIXELS_PER_SECOND = 30.0;
     public static final double MAX_SPEED = SPEED_PIXELS_PER_SECOND / GameLoop.MAX_UPS; //pixels/s divided by updates/s = pixels/update
     public static final double GRAVITY = 5; // acceleration due to gravity
@@ -40,6 +43,7 @@ public class Player extends Hitbox {
     private boolean isAirborne;
     private boolean gravityOn;
     private double gravity;
+    private HealthHearts healthHearts;
 
     /**
      * Constructor for player class
@@ -54,6 +58,8 @@ public class Player extends Hitbox {
         this.radius = radius;
         this.animator = animator;
         this.playerState = new PlayerState(this);
+        this.healthHearts = new HealthHearts(context, this);
+        this.healthHeartNum = MAX_HEALTH_HEARTS;
         tileMap = new Tilemap(new SpriteSheet(context));
 
         paint = new Paint();
@@ -158,6 +164,7 @@ public class Player extends Hitbox {
         paint.setColor(Color.RED);
         //canvas.drawCircle((float) (int) gameCamera.gameToDisplayCoordinatesX(getPositionX()), (float) (int) gameCamera.gameToDisplayCoordinatesY(getPositionY()), 10, paint);
         //canvas.drawRect(getPlayerRect(gameCamera), paint);
+        healthHearts.draw(canvas);
     }
 
     @Override
@@ -189,6 +196,14 @@ public class Player extends Hitbox {
         );
         //Log.d("Player.java", "futurePlayerRect.bottom: " + (int) gameCamera.gameToDisplayCoordinatesY(getPositionY() + velocityY + SpriteSheet.SPRITE_HEIGHT_PIXELS/2+5));
         return playerRect;
+    }
+
+    public int getHealthHearts() {
+        return healthHeartNum;
+    }
+
+    public void setHealthHearts(int healthHeartNum) {
+        this.healthHeartNum = healthHeartNum;
     }
 
 }
