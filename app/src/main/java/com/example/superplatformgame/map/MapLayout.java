@@ -7,27 +7,79 @@ import com.example.superplatformgame.graphics.SpriteSheet;
 public class MapLayout {
     public static final int TILE_WIDTH_PIXELS = SpriteSheet.TILE_WIDTH_PIXELS;
     public static final int TILE_HEIGHT_PIXELS = SpriteSheet.TILE_HEIGHT_PIXELS;
-    public static final int NUMBER_OF_ROW_TILES = 60;
-    public static final int NUMBER_OF_COLUMN_TILES = 60;
+    public static final int NUMBER_OF_ROW_TILES = 120;
+    public static final int NUMBER_OF_COLUMN_TILES = 120;
     private int[][] layout;
 
     public MapLayout(Tilemap.MapType mapType) {
         initializeLayout(mapType);
     }
-    public int[][] getLayout() {return layout;};
+
+    public int[][] getLayout() {
+        return layout;
+    }
+
+
     private void initializeLayout(Tilemap.MapType mapType) {
-        if (mapType == Tilemap.MapType.GRASS_MAP){
-            layout = new int[][]{
-                    {2,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0},
-                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                    {1,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0,0},
-                    {1,2,2,1,1,1,1,2,2,2,2,2,2,2,2,2,2},
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-            };
+        int[] ground = {0, 0, 0, 0, 2, 1, 1, 1};
+        int[] pillar = {0, 0, 0, 2, 1, 1, 1, 1};
+        int[] chasm = {0, 0, 0, 0, 0, 0, 0, 0};
+        int[] overhead_block = {0, 2, 0, 0, 2, 1, 1, 1};
+
+        if (mapType == Tilemap.MapType.GRASS_MAP) {
+            int[][] untransposedMatrix = new int[25][]; // set the map distance from start to end as 25 blocks wide.
+            for (int i = 0; i < untransposedMatrix.length; i++) {
+                if (i < 7 || i > 17) {
+                    untransposedMatrix[i] = ground.clone();
+                } else {
+                    untransposedMatrix[i] = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
+                }
+            }
+            int numRows = untransposedMatrix.length;
+            int numCols = untransposedMatrix[0].length;
+            int[][] tempLayout = new int[numRows][numCols]; // initialize tempLayout for untransposedMatrix
+            boolean prevWasOverheadBlock = false;
+
+            // generate random rows for all rows in between the first and last 7 rows
+            for (int i = 7; i < numRows - 7; i++) {
+                double rand = Math.random();
+                if (rand < 0.3) {
+                    tempLayout[i] = chasm;
+                    prevWasOverheadBlock = false;
+                } else if (rand < 0.6) {
+                    if (prevWasOverheadBlock) {
+                        tempLayout[i] = ground;
+                        prevWasOverheadBlock = false;
+                    } else {
+                        tempLayout[i] = overhead_block;
+                        prevWasOverheadBlock = true;
+                    }
+                } else {
+                    tempLayout[i] = pillar;
+                    prevWasOverheadBlock = false;
+                }
+            }
+
+            // copy the first and last 7 rows from the original matrix
+            for (int i = 0; i < 7; i++) {
+                tempLayout[i] = untransposedMatrix[i];
+            }
+            for (int i = numRows - 7; i < numRows; i++) {
+                tempLayout[i] = untransposedMatrix[i];
+            }
+
+            // transpose untransposedMatrix and assign the result to layout
+            layout = new int[numCols][numRows];
+            for (int i = 0; i < numCols; i++) {
+                for (int j = 0; j < numRows; j++) {
+                    layout[i][j] = tempLayout[j][i];
+                }
+            }
         }
     }
+
+
+
 
     public int getLayoutTileHeight(int[][] layout) {
         return layout.length;
