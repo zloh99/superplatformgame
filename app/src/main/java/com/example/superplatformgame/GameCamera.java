@@ -31,7 +31,6 @@ public class GameCamera {
         displayCenterY = heightPixels/2.0;
     }
 
-
     public void update() {
         if (getPlayerLeft() <= 0) {
             //if player is towards the leftmost side of the map, then do not fix camera.
