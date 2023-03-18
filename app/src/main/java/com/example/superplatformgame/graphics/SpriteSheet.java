@@ -38,6 +38,8 @@ public class SpriteSheet {
     private Matrix matrix;
 
     public SpriteSheet(Context context) {
+
+        //load bitmap for the player sprite when facing right. load another of the same bitmap and reverse it, for player sprite facing left.
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inScaled = false;
         playerBitmapRight = BitmapFactory.decodeResource(context.getResources(), R.drawable.green_alien_big, bitmapOptions);
@@ -45,20 +47,20 @@ public class SpriteSheet {
         matrix.preScale(-1, 1);
         playerBitmapLeft = Bitmap.createBitmap(playerBitmapRight, 0, 0, playerBitmapRight.getWidth(), playerBitmapRight.getHeight(), matrix, true);
 
-        //create and scale sky bitmap
+        //create and scale sky bitmap to 10 times larger so it can cover the whole screen
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         skyBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.skybox_blue, bitmapOptions);
         scaledSkyBitmap = scaleBitmap(skyBitmap,10*SKYBOX_HEIGHT_PIXELS, 10*SKYBOX_WIDTH_PIXELS);
 
-        //create grass tiles bitmap
+        //create grass tiles bitmap and scale it up so it won't be so small.
         grassTileBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.grass_tiles_new, bitmapOptions);
         scaledGrassTileBitmap = scaleBitmap(grassTileBitmap,TILE_SCALE_FACTOR*grassTileBitmap.getHeight(), TILE_SCALE_FACTOR*grassTileBitmap.getWidth());
     }
 
     //get methods for player sprite bitmap
     public Sprite[] getPlayerSpriteArray() {
-        //method for selecting the bitmap for the player's sprite
+        //method for indexing and selecting parts of the bitmap for the player's sprite
         Sprite[] spriteArray = new Sprite[11];
         spriteArray[0] = new Sprite(this, new Rect(0*SPRITE_WIDTH_PIXELS, 0, 1*SPRITE_WIDTH_PIXELS, SPRITE_HEIGHT_PIXELS));
         spriteArray[1] = new Sprite(this, new Rect(1*SPRITE_WIDTH_PIXELS, 0, 2*SPRITE_WIDTH_PIXELS, SPRITE_HEIGHT_PIXELS));
@@ -95,7 +97,7 @@ public class SpriteSheet {
     //get methods for tilemap bitmaps
     public Bitmap getGrassTileBitmap() {return scaledGrassTileBitmap;}
 
-    private Sprite getGrassTileByIndex(int idxRow, int idxCol) {
+/*    private Sprite getGrassTileByIndex(int idxRow, int idxCol) {
         //0,0 = sky, 0,1 = dirt, 0,2 = grass topper
         return new Sprite(this, new Rect(
                 idxCol*GRASSTILES_WIDTH_PIXELS,
@@ -103,9 +105,11 @@ public class SpriteSheet {
                 (idxCol + 1)*GRASSTILES_WIDTH_PIXELS,
                 (idxRow + 1)*GRASSTILES_HEIGHT_PIXELS
         ));
-    }
+    }*/
 
     private Bitmap scaleBitmap(Bitmap bitmap, int newHeight, int newWidth) {
+        //method to scale bitmap to a new set of dimensions
+
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         float scaleWidth = ((float) newWidth)/width;

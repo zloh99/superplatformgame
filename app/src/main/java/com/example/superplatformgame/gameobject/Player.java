@@ -28,7 +28,7 @@ public class Player extends Hitbox {
     public static final double MAX_SPEED = SPEED_PIXELS_PER_SECOND / GameLoop.MAX_UPS; //pixels/s divided by updates/s = pixels/update
     public static final double GRAVITY = 5; // acceleration due to gravity
     public static final double BOUNCE_FACTOR = 0.7; // scale of how much the player bounces off the walls
-    public static final double JUMP_SPEED = 60;
+    public static final double JUMP_SPEED = 60; //how high player can jump
     private final ButtonLeft buttonLeft;
     private final ButtonRight buttonRight;
     private final ButtonJump buttonJump;
@@ -37,9 +37,6 @@ public class Player extends Hitbox {
     private Tilemap tileMap;
     private double previousPositionX;
     private double previousPositionY;
-    private boolean isAirborne;
-    private boolean gravityOn;
-    private double gravity;
 
     /**
      * Constructor for player class
@@ -59,9 +56,8 @@ public class Player extends Hitbox {
         paint = new Paint();
         int color = ContextCompat.getColor(context, R.color.player);
         paint.setColor(color);
-        gravity = GRAVITY;
     }
-
+    
     public void setPlayerVelocityX(double x) {
         velocityX = x;
     }
@@ -72,31 +68,15 @@ public class Player extends Hitbox {
         return velocityY;
     }
 
-    public void moveBackX() {
-        Log.d("Player.java", "Player moved back in x direction");
+/*    public void moveBackX() {
+        //Log.d("Player.java", "Player moved back in x direction");
         //velocityX += -MAX_SPEED;
         //positionX = previousPositionX;
-    }
+    }*/
 
     public void moveBackY() {
         //Log.d("Player.java", "Player moved back in y direction");
         positionY = previousPositionY;
-    }
-
-    public void setIsAirborne(boolean bool) {
-        isAirborne = bool;
-    }
-
-    public Boolean getIsAirborne() {
-        return isAirborne;
-    }
-
-    public void setGravityOn(boolean bool) {
-        gravityOn = bool;
-    }
-
-    public Boolean getGravityOn() {
-        return gravityOn;
     }
 
     @Override
@@ -104,28 +84,34 @@ public class Player extends Hitbox {
         //update player velocity based on which button is pressed
         if (buttonLeft.getState()) {
             if(tileMap.isColliding(this, gameCamera, true, false)) {
+                //if player presses left button and collides with something, create an opposing force * bounce factor to make the player bounce off the collided object
                 positionX = previousPositionX;
                 velocityX = -velocityX * BOUNCE_FACTOR;
             } else {
+                //if player presses left button and there is no collision, then player moves left
                 velocityX += -MAX_SPEED;
             }
         }
          else if (buttonRight.getState()) {
             if(tileMap.isColliding(this, gameCamera, true, false)) {
+                //if player presses right button and collides with something, create an opposing force * bounce factor to make the player bounce off the collided object
                 positionX = previousPositionX;
                 velocityX = -velocityX * BOUNCE_FACTOR;
             } else {
+                //if player presses right button and there is no collision, then player moves right
                 velocityX += MAX_SPEED;
             }
         } else {
+             //if neither left or right button is pressed, set X velocity to 0.
             velocityX = 0;
         }
         if (buttonJump.getState()) {
             if (velocityY == 0) {
+                //if jump button is pressed and current Y velocity = 0 (means that player is not jumping or falling), then player jumps.
                 velocityY -= JUMP_SPEED;
             }
         } else {
-
+            //if jump button is not pressed, then do nothing and let gravity pull the player down
         }
 
         //Log.d("Player.java", "VelocityX: " + velocityX + ", VelocityY: " + velocityY);
@@ -133,23 +119,23 @@ public class Player extends Hitbox {
         //apply gravity
         velocityY += GRAVITY;
         //Log.d("Player.java", "Gravity applied");
-        //Log.d("Player.java", "Gravity:" + gravity);
 
-        //update player position
+        //before player's position is updated, keep track of their current position and store it as the previous position
         previousPositionX = positionX;
         previousPositionY = positionY;
 
-        // If there is no collision, update the player's position as normal
+        //update the player's position as normal
         positionX += velocityX;
         positionY += velocityY;
         //Log.d("Player.java", "PositionX: " + positionX + ", PositionY: " + positionY);
 
 
-        //update player direction
+        //update player statae
         playerState.update(tileMap, gameCamera);
     }
 
     public void draw(Canvas canvas, GameCamera gameCamera) {
+        //animator draw method to draw sprite onto player location
         animator.draw(canvas, gameCamera, this);
 
         paint = new Paint();
@@ -160,13 +146,14 @@ public class Player extends Hitbox {
 
     @Override
     public void update() {
-
+        //empty method to match superclass
     }
 
     public PlayerState getPlayerState() {
         return playerState;
     }
 
+/*
     public Rect getPlayerRect(GameCamera gameCamera){
         Rect playerRect = new Rect(
                 (int) gameCamera.gameToDisplayCoordinatesX(getPositionX()) - SpriteSheet.SPRITE_WIDTH_PIXELS/2,
@@ -177,8 +164,10 @@ public class Player extends Hitbox {
         //Log.d("Player.java", "futurePlayerRect.bottom: " + (int) gameCamera.gameToDisplayCoordinatesY(getPositionY() + SpriteSheet.SPRITE_HEIGHT_PIXELS/2+5));
         return playerRect;
     }
+*/
 
     public Rect getFuturePlayerRect(GameCamera gameCamera){
+        //get a rectangle that is bounded over player's sprite + their velocity
         Rect playerRect = new Rect(
                 (int) (gameCamera.gameToDisplayCoordinatesX(getPositionX()) - SpriteSheet.SPRITE_WIDTH_PIXELS/2 + velocityX),
                 (int) (gameCamera.gameToDisplayCoordinatesY(getPositionY()) - SpriteSheet.SPRITE_HEIGHT_PIXELS/2 + velocityY),

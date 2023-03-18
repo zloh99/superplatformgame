@@ -19,35 +19,16 @@ public class PlayerState {
         IS_MOVING_RIGHT
     }
 
-    public enum AirborneState {
-        AIR,
-        GROUND
-    }
-
     private Player player;
     private State state;
-    private AirborneState airborneState;
 
     public PlayerState(Player player) {
         this.player = player;
         this.state = State.NOT_MOVING_RIGHT;
-        this.airborneState = AirborneState.AIR;
     }
 
     public State getState() {
         return state;
-    }
-
-    public AirborneState getAirborneState() {
-        return airborneState;
-    }
-
-    public void setAirborneState(boolean bool) {
-        //true for ground, false for sky
-        if (bool) {
-            airborneState = AirborneState.GROUND;
-        }
-        else airborneState = AirborneState.AIR;
     }
 
     public void update(Tilemap tilemap, GameCamera gameCamera) {
