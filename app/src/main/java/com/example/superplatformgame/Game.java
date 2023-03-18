@@ -44,6 +44,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private int buttonRightId = 0;
     private final ButtonJump buttonJump;
     private int buttonJumpId = 0;
+    private GameOver gameOver;
 
 
     public Game(Context context) {
@@ -62,6 +63,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         buttonLeft = new ButtonLeft(context, 100, 850, 150, 150);
         buttonRight = new ButtonRight(context, 300, 850, 150, 150);
         buttonJump = new ButtonJump(context, 1850, 860, 140, 140);
+        gameOver = new GameOver(getContext());
 
         //Initialise game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
@@ -154,12 +156,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
         //Log.d("Game.java", "skyBoxList size: " + skyBoxList.size());
 
-        //draw tilemap
-        tileMap.draw(canvas, gameCamera);
-
-
         //Draw game objects
         player.draw(canvas, gameCamera);
+
+        //draw tilemap
+        tileMap.draw(canvas, gameCamera);
 
         //Draw game panels
         performance.draw(canvas);
@@ -167,11 +168,19 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         buttonRight.draw(canvas);
         buttonJump.draw(canvas);
 
-
+        //Draw Game over if the player is dead
+        if(player.getHealthHearts() <= 0) {
+            gameOver.draw(canvas);
+        }
 
     }
 
     public void update() {
+
+        // Stop updating the game if player is dead
+        if (player.getHealthHearts() <= 0) {
+            return;
+        }
 
         //update game state
         player.update(gameCamera, tileMap);
@@ -183,17 +192,20 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         //Check for collision in X
-/*        if(tileMap.isColliding(player, gameCamera, true, false)) {
+        /*
+        if(tileMap.isColliding(player, gameCamera, true, false)) {
             player.moveBackX();
             Log.d("Game.java", "collisionStatusX = true");
-        }*/
+
+        }
+        */
 
         //check for collision in Y
         if(!tileMap.isColliding(player, gameCamera, false, true)) {
             //Log.d("Game.java", "collisionStatusY = false");
             player.setIsAirborne(true);
             //Log.d("Game.java", "Airborne = true");
-            player.setHealthHearts(player.getHealthHearts() - 1);
+            //player.setHealthHearts(player.getHealthHearts() - 1);
         }
 
         if(tileMap.isColliding(player, gameCamera, false, true)) {
@@ -201,7 +213,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             player.setIsAirborne(false);
             player.moveBackY();
             player.setPlayerVelocityY(0);
-            player.setHealthHearts(player.getHealthHearts() - 1);
         }
 
 

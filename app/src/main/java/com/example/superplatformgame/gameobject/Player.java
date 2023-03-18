@@ -112,6 +112,7 @@ public class Player extends Hitbox {
             if(tileMap.isColliding(this, gameCamera, true, false)) {
                 positionX = previousPositionX;
                 velocityX = -velocityX * BOUNCE_FACTOR;
+                setHealthHearts(getHealthHearts() - 1);
             } else {
                 velocityX += -MAX_SPEED;
             }
@@ -120,6 +121,7 @@ public class Player extends Hitbox {
             if(tileMap.isColliding(this, gameCamera, true, false)) {
                 positionX = previousPositionX;
                 velocityX = -velocityX * BOUNCE_FACTOR;
+                setHealthHearts(getHealthHearts() - 1);
             } else {
                 velocityX += MAX_SPEED;
             }
@@ -158,8 +160,8 @@ public class Player extends Hitbox {
     public void draw(Canvas canvas, GameCamera gameCamera) {
         animator.draw(canvas, gameCamera, this);
 
-        paint = new Paint();
-        paint.setColor(Color.RED);
+        //paint = new Paint();
+        //paint.setColor(Color.RED);
         //canvas.drawCircle((float) (int) gameCamera.gameToDisplayCoordinatesX(getPositionX()), (float) (int) gameCamera.gameToDisplayCoordinatesY(getPositionY()), 10, paint);
         //canvas.drawRect(getPlayerRect(gameCamera), paint);
         healthHearts.draw(canvas);
