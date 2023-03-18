@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat;
 import com.example.superplatformgame.R;
 
 /**
- * The ButtonLeft class is responsible for the move left button.
+ * ButtonLeft is the class that handles the drawing, updating, and states of the move left button.
  */
 public class ButtonLeft extends Buttons{
 
@@ -26,15 +26,12 @@ public class ButtonLeft extends Buttons{
     private Bitmap bitmap;
     private State state;
     private Rect rect;
-    private Rect buttonPosition; // = new Rect(0, 800, 242, 1030);
+    private Rect buttonPosition;
     private Region region;
 
 
     public ButtonLeft(Context context, double positionX, double positionY, double width, double height) {
         super(context, positionX, positionY, width, height);
-        //Define paint object
-        paint = new Paint();
-        paint.setColor(ContextCompat.getColor(context, R.color.button));
 
         //initialise state (default = not pressed)
         this.state = State.NOT_PRESSED;
