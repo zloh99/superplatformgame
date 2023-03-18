@@ -97,7 +97,6 @@ public class Player extends Hitbox {
                 //if player presses left button and collides with something, create an opposing force * bounce factor to make the player bounce off the collided object
                 positionX = previousPositionX;
                 velocityX = -velocityX * BOUNCE_FACTOR;
-                setHealthHearts(getHealthHearts() - 1);
             } else {
                 //if player presses left button and there is no collision, then player moves left
                 velocityX += -MAX_SPEED;
@@ -108,7 +107,6 @@ public class Player extends Hitbox {
                 //if player presses right button and collides with something, create an opposing force * bounce factor to make the player bounce off the collided object
                 positionX = previousPositionX;
                 velocityX = -velocityX * BOUNCE_FACTOR;
-                setHealthHearts(getHealthHearts() - 1);
             } else {
                 //if player presses right button and there is no collision, then player moves right
                 velocityX += MAX_SPEED;
@@ -142,7 +140,7 @@ public class Player extends Hitbox {
         //Log.d("Player.java", "PositionX: " + positionX + ", PositionY: " + positionY);
 
 
-        //update player statae
+        //update player state
         playerState.update(tileMap, gameCamera);
     }
 
@@ -154,7 +152,6 @@ public class Player extends Hitbox {
         //paint.setColor(Color.RED);
         //canvas.drawCircle((float) (int) gameCamera.gameToDisplayCoordinatesX(getPositionX()), (float) (int) gameCamera.gameToDisplayCoordinatesY(getPositionY()), 10, paint);
         //canvas.drawRect(getPlayerRect(gameCamera), paint);
-        healthHearts.draw(canvas);
     }
 
     @Override

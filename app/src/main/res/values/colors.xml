@@ -10,4 +10,5 @@
     <color name="magenta">#D136F4</color>
     <color name="player">#00FF00</color>
     <color name="button">#CFCFCF</color>
+    <color name="gameOver">#F44336</color>
 </resources>

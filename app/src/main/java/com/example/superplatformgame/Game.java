@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 
 import com.example.superplatformgame.gameobject.Animator;
 import com.example.superplatformgame.gameobject.GameObject;
+import com.example.superplatformgame.gameobject.HealthHearts;
 import com.example.superplatformgame.gameobject.Player;
 import com.example.superplatformgame.gameobject.PlayerState;
 import com.example.superplatformgame.gamepanel.ButtonJump;
@@ -36,7 +37,7 @@ import java.util.List;
  */
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
-    private final Player player; //player object
+    private Player player; //player object
     private GameLoop gameLoop; //game loop
     private Performance performance; //game panel object that shows average UPS and FPS
     private GameCamera gameCamera; //game camera object
@@ -44,12 +45,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private List<SkyBox> skyBoxList = new ArrayList<SkyBox>(); //list to keep track of how many skybox objects there are
 
     private Tilemap tileMap; //tilemap object
-    private final ButtonLeft buttonLeft; //button to move player left
+    private ButtonLeft buttonLeft; //button to move player left
     private int buttonLeftId = 0; //id to store individual touch events happening on the left button
-    private final ButtonRight buttonRight; //button to move player right
+    private ButtonRight buttonRight; //button to move player right
     private int buttonRightId = 0; //id to store individual touch events happening on the right button
-    private final ButtonJump buttonJump; //button to make player jump
+    private ButtonJump buttonJump; //button to make player jump
     private int buttonJumpId = 0; //id to store individual touch events happening on the jump button
+    private HealthHearts healthHearts;
     private GameOver gameOver; // check game over
 
 
@@ -75,12 +77,48 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Initialise game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
         Animator animator = new Animator(spriteSheet.getPlayerSpriteArray());
-        player = new Player(context, buttonLeft, buttonRight, buttonJump, 1400, 200, 32, animator);
+        player = new Player(context, buttonLeft, buttonRight, buttonJump, 1000, 200, 32, animator);
+
+        healthHearts = new HealthHearts(context, player);
 
         //Initialise game display and center it around the player
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        gameCamera = new GameCamera(displayMetrics.widthPixels, displayMetrics.heightPixels, player);
+        gameCamera = new GameCamera(displayMetrics.widthPixels, displayMetrics.heightPixels, player, new MapLayout(Tilemap.MapType.GRASS_MAP));
+
+        //Initialise game graphics
+        skyBoxList.add(new SkyBox(spriteSheet));
+        tileMap = new Tilemap(spriteSheet);
+
+        setFocusable(true);
+    }
+
+    public void reset(Context context) {
+        //Get surface holder and add callback
+        SurfaceHolder surfaceHolder = getHolder();
+        surfaceHolder.addCallback(this);
+
+        //initialise game loop
+        //gameLoop = new GameLoop(this, surfaceHolder);
+
+        //Initialise game panels (all graphical objects that do not interact with any game objects)
+        //performance = new Performance(context, gameLoop);
+        buttonLeft = new ButtonLeft(context, 100, 850, 150, 150);
+        buttonRight = new ButtonRight(context, 300, 850, 150, 150);
+        buttonJump = new ButtonJump(context, 1850, 860, 140, 140);
+        gameOver = new GameOver(getContext());
+
+        //Initialise game objects
+        SpriteSheet spriteSheet = new SpriteSheet(context);
+        Animator animator = new Animator(spriteSheet.getPlayerSpriteArray());
+        player = new Player(context, buttonLeft, buttonRight, buttonJump, 1000, 200, 32, animator);
+
+        healthHearts = new HealthHearts(context, player);
+
+        //Initialise game display and center it around the player
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        gameCamera = new GameCamera(displayMetrics.widthPixels, displayMetrics.heightPixels, player, new MapLayout(Tilemap.MapType.GRASS_MAP));
 
         //Initialise game graphics
         skyBoxList.add(new SkyBox(spriteSheet));
@@ -130,6 +168,23 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     //check if the jump button is pressed
                     buttonJumpId = event.getPointerId(event.getActionIndex());
                     buttonJump.setIsPressed(true);
+                } else if (player.getHealthHearts() <= 0) {
+                    //check if there is a game over screen
+                    if (gameOver.isPressed((double) event.getX(), (double) event.getY())) {
+                        gameOver.setIsPressed(true);
+                        Log.d("Game.java", "Game Over");
+                        Log.d("Game.java", "isRunning = " + gameLoop.getIsRunning());
+                        if (gameLoop.getState().equals(Thread.State.TERMINATED)) {
+                            Log.d("Game.java", "Loading new game...");
+                            gameLoop = new GameLoop(this, getHolder());
+                            reset(getContext());
+                            gameLoop.startLoop();//check state of thread to see if it is terminated
+                            //then we instantiate a new gameLoop object, because a thread object can only be run once until it is destroyed,
+                            // so if we wanna run it again we have to create a new one
+                        } else {
+                            Log.d("Game.java", "Thread is still running");
+                        }
+                    }
                 }
                 return true;
 
@@ -174,8 +229,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         buttonLeft.draw(canvas);
         buttonRight.draw(canvas);
         buttonJump.draw(canvas);
+        healthHearts.draw(canvas);
 
-        //Draw Game over if the player is dead
+        //if player's health = 0, then draw game over screen
         if(player.getHealthHearts() <= 0) {
             gameOver.draw(canvas);
         }
@@ -185,7 +241,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public void update() {
 
         // Stop updating the game if player is dead
-        if (player.getHealthHearts() <= 0) {
+        if(player.getHealthHearts() <= 0) {
+            gameLoop.stopLoop();
             return;
         }
 
@@ -208,17 +265,21 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         */
 
         //check for collision in Y
-
         if(tileMap.isColliding(player, gameCamera, false, true)) {
             //Log.d("Game.java", "collisionStatusY = true");
             player.moveBackY();
             player.setPlayerVelocityY(0);
         }
 
+        //check if player has fallen into a chasm
+        if(player.getPositionY() > gameCamera.getMapBottomY()) {
+            player.setHealthHearts(0);
+        }
+
         //update game panel
 
         //update gameCamera after all other updates
-        gameCamera.update(new MapLayout(Tilemap.MapType.GRASS_MAP));
+        gameCamera.update();
     }
 
     //Other methods
