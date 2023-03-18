@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 
 /**
- * Health hearts
+ * Health hearts is a class that handles the drawing of hearts on the screen in correspondence with the player's health
  */
 public class HealthHearts {
 

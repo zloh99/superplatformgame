@@ -22,8 +22,9 @@ public class GameCamera {
     private double gameCenterX;
     private double gameCenterY;
     private final GameObject centerObject;
+    private int mapBottomY;
 
-    public GameCamera(int widthPixels, int heightPixels, GameObject centerObject) {
+    public GameCamera(int widthPixels, int heightPixels, GameObject centerObject, MapLayout mapLayout) {
         this.widthPixels = widthPixels;
         this.heightPixels = heightPixels;
         DISPLAY_RECT = new Rect(0, 0, widthPixels, heightPixels);
@@ -32,10 +33,11 @@ public class GameCamera {
 
         displayCenterX = widthPixels/2.0;
         displayCenterY = heightPixels/2.0;
+
+        mapBottomY = (int) gameToDisplayCoordinatesY(mapLayout.getLayoutTileHeight(mapLayout.getLayout()) * SpriteSheet.TILE_HEIGHT_PIXELS);
     }
 
-    public void update(MapLayout mapLayout) {
-        int mapBottomY = mapLayout.getLayoutTileHeight(mapLayout.getLayout());
+    public void update() {
         if (getPlayerLeft() <= 0) {
             //if player is towards the leftmost side of the map, then do not fix camera on player's X axis
             gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around
@@ -61,6 +63,8 @@ public class GameCamera {
             gameToDisplayCoordinateOffsetX = displayCenterX - gameCenterX;
             gameToDisplayCoordinateOffsetY = displayCenterY - gameCenterY;
         }
+        //Log.d("GameCamera.java", "getPlayerBottom(): " + getPlayerBottom());
+        //Log.d("GameCamera.java", "mapBottomY: " + mapBottomY);
     }
 
     //remember to put these methods over any X and Y coordinates that are not fixed to the camera, these 2 methods are to account for the offset
@@ -90,7 +94,11 @@ public class GameCamera {
     }
 
     public int getPlayerBottom() {
-        return (int) centerObject.getPositionY() - heightPixels/2;
+        return (int) centerObject.getPositionY() + heightPixels/2;
+    }
+
+    public int getMapBottomY() {
+        return (int) mapBottomY;
     }
 
 }
