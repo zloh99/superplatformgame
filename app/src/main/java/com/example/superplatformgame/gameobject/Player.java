@@ -57,7 +57,7 @@ public class Player extends Hitbox {
         int color = ContextCompat.getColor(context, R.color.player);
         paint.setColor(color);
     }
-    
+
     public void setPlayerVelocityX(double x) {
         velocityX = x;
     }

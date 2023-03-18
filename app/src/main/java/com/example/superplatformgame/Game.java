@@ -200,7 +200,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //update game panel
 
         //update gameCamera after all other updates
-        gameCamera.update();
+        gameCamera.update(new MapLayout(Tilemap.MapType.GRASS_MAP));
     }
 
     //Other methods
