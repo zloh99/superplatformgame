@@ -7,6 +7,9 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.DisplayMetrics;
 
+/**
+ * Sprite is a class that handles the drawing of bitmaps from the class SpriteSheet to the canvas.
+ */
 public class Sprite {
 
     private final SpriteSheet spriteSheet;
@@ -20,6 +23,7 @@ public class Sprite {
 
 
     public void drawRight(Canvas canvas, int x, int y) {
+        //method to draw player sprite when it is facing right
         canvas.drawBitmap(
                 spriteSheet.getBitmapRight(),
                 rect,
@@ -29,6 +33,7 @@ public class Sprite {
     }
 
     public void drawLeft(Canvas canvas, int x, int y) {
+        //method to draw player sprite when it is facing left
         canvas.drawBitmap(
                 spriteSheet.getBitmapLeft(),
                 rect,

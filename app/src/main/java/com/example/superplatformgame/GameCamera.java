@@ -2,8 +2,11 @@ package com.example.superplatformgame;
 
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.util.Log;
 
 import com.example.superplatformgame.gameobject.GameObject;
+import com.example.superplatformgame.graphics.SpriteSheet;
+import com.example.superplatformgame.map.MapLayout;
 
 /**
  * This class controls the camera and centers it onto a game object (the player)
@@ -31,15 +34,28 @@ public class GameCamera {
         displayCenterY = heightPixels/2.0;
     }
 
-    public void update() {
+    public void update(MapLayout mapLayout) {
+        int mapBottomY = mapLayout.getLayoutTileHeight(mapLayout.getLayout());
         if (getPlayerLeft() <= 0) {
+            //if player is towards the leftmost side of the map, then do not fix camera on player's X axis
             gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around
             gameCenterY = centerObject.getPositionY();
 
             gameToDisplayCoordinateOffsetY = displayCenterY - gameCenterY;
+        } else if (getPlayerBottom() >= mapBottomY) {
+            //if player camera is at the bounds of the bottom of the game world, then do not fix camera on player's Y axis
+            gameCenterX = centerObject.getPositionX();
+            gameCenterY = centerObject.getPositionY();
+
+            gameToDisplayCoordinateOffsetX = displayCenterX - gameCenterX;
+        } else if (getPlayerLeft() <= 0 && getPlayerBottom() >= mapBottomY) {
+            //if player camera is at the leftmost side and bounds the bottom of the game world, do not fix camera on player's X and Y axis
+            gameCenterX = centerObject.getPositionX();
+            gameCenterY = centerObject.getPositionY();
         }
         else {
-            gameCenterX = centerObject.getPositionX(); //centerObject - any game object to center the screen around
+            //if player is away from the leftmost side of the map, and from the bottom of the map, then fix camera on player.
+            gameCenterX = centerObject.getPositionX();
             gameCenterY = centerObject.getPositionY();
 
             gameToDisplayCoordinateOffsetX = displayCenterX - gameCenterX;
@@ -71,6 +87,10 @@ public class GameCamera {
 
     public int getPlayerLeft() {
         return (int) centerObject.getPositionX() - widthPixels/2;
+    }
+
+    public int getPlayerBottom() {
+        return (int) centerObject.getPositionY() - heightPixels/2;
     }
 
 }

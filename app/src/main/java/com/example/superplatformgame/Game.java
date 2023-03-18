@@ -30,21 +30,28 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * The game class handles everything in the game, including the game loop, drawing all objects to the canvas,
+ * and updating all the relevant objects in the game.
+ */
+
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
-    private final Player player;
-    private GameLoop gameLoop;
-    private Performance performance;
-    private GameCamera gameCamera;
+    private final Player player; //player object
+    private GameLoop gameLoop; //game loop
+    private Performance performance; //game panel object that shows average UPS and FPS
+    private GameCamera gameCamera; //game camera object
     //private SkyBox skyBox;
     private List<SkyBox> skyBoxList = new ArrayList<SkyBox>(); //list to keep track of how many skybox objects there are
-    private Tilemap tileMap;
-    private final ButtonLeft buttonLeft;
-    private int buttonLeftId = 0;
-    private final ButtonRight buttonRight;
-    private int buttonRightId = 0;
-    private final ButtonJump buttonJump;
-    private int buttonJumpId = 0;
-    private GameOver gameOver;
+
+    private Tilemap tileMap; //tilemap object
+    private final ButtonLeft buttonLeft; //button to move player left
+    private int buttonLeftId = 0; //id to store individual touch events happening on the left button
+    private final ButtonRight buttonRight; //button to move player right
+    private int buttonRightId = 0; //id to store individual touch events happening on the right button
+    private final ButtonJump buttonJump; //button to make player jump
+    private int buttonJumpId = 0; //id to store individual touch events happening on the jump button
+    private GameOver gameOver; // check game over
+
 
 
     public Game(Context context) {
@@ -150,7 +157,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        //draw skybox first
+        //draw skybox first before everything else
         for (SkyBox skyBox: skyBoxList) {
             skyBox.draw(canvas, gameCamera, skyBoxList.indexOf(skyBox)* skyBox.getWidth(), 0);
         }
@@ -188,7 +195,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //spawn new skybox if camera isn't wholly contained in one
         if (gameCamera.getScreenRight() >= skyBoxList.size()*2560) {
             skyBoxList.add(new SkyBox(new SpriteSheet(getContext())));
-            Log.d("Game.java", "Add Skybox");
+            //Log.d("Game.java", "Add Skybox");
         }
 
         //Check for collision in X
@@ -201,25 +208,17 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         */
 
         //check for collision in Y
-        if(!tileMap.isColliding(player, gameCamera, false, true)) {
-            //Log.d("Game.java", "collisionStatusY = false");
-            player.setIsAirborne(true);
-            //Log.d("Game.java", "Airborne = true");
-            //player.setHealthHearts(player.getHealthHearts() - 1);
-        }
 
         if(tileMap.isColliding(player, gameCamera, false, true)) {
             //Log.d("Game.java", "collisionStatusY = true");
-            player.setIsAirborne(false);
             player.moveBackY();
             player.setPlayerVelocityY(0);
         }
 
-
         //update game panel
 
         //update gameCamera after all other updates
-        gameCamera.update();
+        gameCamera.update(new MapLayout(Tilemap.MapType.GRASS_MAP));
     }
 
     //Other methods

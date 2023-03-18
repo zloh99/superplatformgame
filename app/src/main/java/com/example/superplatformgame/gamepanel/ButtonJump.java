@@ -13,6 +13,9 @@ import androidx.core.content.ContextCompat;
 
 import com.example.superplatformgame.R;
 
+/**
+ * ButtonJump is the class that handles the drawing, updating, and states of the jump button.
+ */
 public class ButtonJump extends Buttons{
 
     public enum State {
@@ -29,16 +32,16 @@ public class ButtonJump extends Buttons{
 
     public ButtonJump(Context context, double positionX, double positionY, double width, double height) {
         super(context, positionX, positionY, width, height);
-        //Define paint object
-        paint = new Paint();
-        paint.setColor(ContextCompat.getColor(context, R.color.button));
 
+        //initialise default state of button as not pressed.
         this.state = State.NOT_PRESSED;
 
+        //load in bitmap for the jump button
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inScaled = false;
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.button_jump, bitmapOptions);
 
+        //initialise and draw an invisible region over the button for the purposes of detecting touch events on it.
         buttonPosition = new Rect((int) positionX, (int) positionY, (int) (positionX+width), (int) (positionY+height));
         this.region = new Region(buttonPosition);
 
@@ -48,10 +51,12 @@ public class ButtonJump extends Buttons{
     public void draw(Canvas canvas) {
         switch(state) {
             case NOT_PRESSED:
+                //what happens when the button is not pressed
                 canvas.drawBitmap(bitmap, new Rect(0, 0, 230, 242), buttonPosition,
                         null);
                 break;
             case PRESSED:
+                //what happens when the button is pressed
                 canvas.drawBitmap(bitmap, new Rect(230, 0, 460, 242), buttonPosition,
                         null);
                 break;
@@ -64,7 +69,7 @@ public class ButtonJump extends Buttons{
     }
 
     public boolean isPressed(double touchPositionX, double touchPositionY) {
-        //check if touch X and Y coordinates are within the button
+        //check if touch X and Y coordinates are within the invisible rectangle drawn over the button
         if (region.contains((int) touchPositionX, (int) touchPositionY)) {
             return true;
         }
@@ -75,11 +80,11 @@ public class ButtonJump extends Buttons{
     public void setIsPressed(boolean value) {
         if (value) {
             state = State.PRESSED;
-            Log.d("ButtonDown.java", "State.PRESSED");
+            //Log.d("ButtonDown.java", "State.PRESSED");
         }
         else {
             state = State.NOT_PRESSED;
-            Log.d("ButtonLeft.java", "State.NOT_PRESSED");
+            //Log.d("ButtonLeft.java", "State.NOT_PRESSED");
         }
     }
 
