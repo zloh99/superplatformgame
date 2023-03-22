@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.example.superplatformgame.Game;
 import com.example.superplatformgame.GameCamera;
+import com.example.superplatformgame.gameobject.Hitbox;
 import com.example.superplatformgame.gameobject.Player;
 import com.example.superplatformgame.graphics.SpriteSheet;
 
@@ -129,9 +130,9 @@ public class Tilemap {
 
     //isColliding checks for collision between a rectangle drawn over the player sprite, against all the rectangles in the rectLayout ArrayList
 
-   public boolean isColliding(Player player, GameCamera gameCamera, boolean checkX, boolean checkY) {
+   public boolean isColliding(Hitbox hitbox, GameCamera gameCamera, boolean checkX, boolean checkY) {
         //get player rectangle
-        Rect playerRect = player.getFuturePlayerRect(gameCamera);
+        Rect playerRect = hitbox.getFuturePlayerRect(gameCamera);
 
         //iterate through every invisible rectangle in rectLayout and check to see if there is intersection between them and the player rectangle
         for (int row = 0; row < rectLayout.size(); row++) {

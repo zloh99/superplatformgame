@@ -8,16 +8,7 @@ import com.example.superplatformgame.map.Tilemap;
 /**
  * Class that records different motion states of the player
  */
-public class PlayerState {
-
-    public enum State {
-        NOT_MOVING_LEFT,
-        STARTED_MOVING_LEFT,
-        IS_MOVING_LEFT,
-        NOT_MOVING_RIGHT,
-        STARTED_MOVING_RIGHT,
-        IS_MOVING_RIGHT
-    }
+public class PlayerState extends HitboxState{
 
     private Player player;
     private State state;
@@ -27,7 +18,7 @@ public class PlayerState {
         this.state = State.NOT_MOVING_RIGHT;
     }
 
-    public State getState() {
+    public HitboxState.State getState() {
         return state;
     }
 

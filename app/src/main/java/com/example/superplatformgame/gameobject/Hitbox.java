@@ -3,6 +3,7 @@ package com.example.superplatformgame.gameobject;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 import com.example.superplatformgame.GameCamera;
 import com.example.superplatformgame.map.MapLayout;
@@ -47,4 +48,6 @@ public abstract class Hitbox extends GameObject {
                 paint
         );
     }
+
+    public abstract Rect getFuturePlayerRect(GameCamera gameCamera);
 }
