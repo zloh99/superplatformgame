@@ -18,36 +18,30 @@ import com.example.superplatformgame.graphics.SpriteSheet;
 import com.example.superplatformgame.map.Tilemap;
 
 public class Enemy extends Hitbox {
-    public static final int MAX_HEALTH_HEARTS = 3;
-    private int healthHeartNum;
     public static final double SPEED_PIXELS_PER_SECOND = 30.0;
     public static final double MAX_SPEED = SPEED_PIXELS_PER_SECOND / GameLoop.MAX_UPS; //pixels/s divided by updates/s = pixels/update
-    public static final double GRAVITY = 5; // acceleration due to gravity
+    public static final double GRAVITY = 0; // acceleration due to gravity
     public static final double BOUNCE_FACTOR = 0.7; // scale of how much the player bounces off the walls
     public static final double JUMP_SPEED = 60; //how high player can jump
+
+    public static final double ENEMY_WIDTH = 10;
+    public static final double ENEMY_HEIGHT = 20;
     private Animator animator;
     private EnemyState enemyState;
     private Tilemap tileMap;
     private double previousPositionX;
     private double previousPositionY;
 
-    public GameCamera gameCamera;
-
     private double maxPositionX;
     private double minPositionX;
-
-    private boolean isAirborne; // not sure if needed
-    private boolean gravityOn; // not sure if needed
-    private double gravity; // not sure if needed
-    private HealthHearts healthHearts; // needed for health hearts
 
 
     /**
      * Constructor for enemy class
      */
-    public Enemy(Context context, double positionX, double positionY, double radius,
+    public Enemy(Context context, double positionX, double positionY,
                  double width, double velocity, Animator animator) {
-        super(context, ContextCompat.getColor(context, R.color.player), positionX, positionY, radius);
+        super(context, ContextCompat.getColor(context, R.color.player), positionX, positionY, 10);
         this.positionX = positionX;
         this.positionY = positionY;
 
@@ -55,7 +49,6 @@ public class Enemy extends Hitbox {
         this.maxPositionX = positionX + width/2;
         this.velocityX = velocity;
 
-        this.radius = radius;
         this.animator = animator;
         this.enemyState = new EnemyState(this);
         tileMap = new Tilemap(new SpriteSheet(context));
@@ -65,15 +58,15 @@ public class Enemy extends Hitbox {
         paint.setColor(color);
     }
 
-//    public void setPlayerVelocityX(double x) {
-//        velocityX = x;
-//    }
+    public void setPlayerVelocityX(double x) {
+        velocityX = x;
+    }
     public void setPlayerVelocityY(double y) {
         velocityY = y;
     }
-//    public double getPlayerVelocityY() {
-//        return velocityY;
-//    }
+    public double getPlayerVelocityY() {
+        return velocityY;
+    }
 
 /*    public void moveBackX() {
         //Log.d("Player.java", "Player moved back in x direction");
@@ -89,7 +82,7 @@ public class Enemy extends Hitbox {
     @Override
     public void update(GameCamera gameCamera, Tilemap tileMap) {
         //update player velocity based on which button is pressed
-        if(tileMap.isColliding(this, gameCamera, true, false) || tileMap.isColliding(this, gameCamera, true, false)) {
+        if(tileMap.isColliding(this, gameCamera, true, false)) {
             positionX = previousPositionX;
             velocityX = -velocityX * BOUNCE_FACTOR;
         } else if (this.positionX > this.maxPositionX || this.positionX < this.minPositionX) {
@@ -133,7 +126,6 @@ public class Enemy extends Hitbox {
 
         paint = new Paint();
         paint.setColor(Color.RED);
-        canvas.drawCircle((float) (int) gameCamera.gameToDisplayCoordinatesX(getPositionX()), (float) (int) gameCamera.gameToDisplayCoordinatesY(getPositionY()), 10, paint);
         canvas.drawRect(getPlayerRect(gameCamera), paint);
     }
 
@@ -151,7 +143,6 @@ public class Enemy extends Hitbox {
                 (int) (gameCamera.gameToDisplayCoordinatesX(getPositionX()) + SpriteSheet.SPRITE_WIDTH_PIXELS/2 + velocityX),
                 (int) (gameCamera.gameToDisplayCoordinatesY(getPositionY()) + SpriteSheet.SPRITE_HEIGHT_PIXELS/2 + velocityY)
         );
-        //Log.d("Player.java", "futurePlayerRect.bottom: " + (int) gameCamera.gameToDisplayCoordinatesY(getPositionY() + velocityY + SpriteSheet.SPRITE_HEIGHT_PIXELS/2+5));
         return playerRect;
     }
 

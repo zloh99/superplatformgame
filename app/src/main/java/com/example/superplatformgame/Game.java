@@ -3,6 +3,7 @@ package com.example.superplatformgame;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -96,11 +97,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         tileMap = new Tilemap(spriteSheet);
 
         //Generate enemies
-        int numEnemies = 3;
+        int numEnemies = 2;
         for (int i = 0; i < numEnemies; i++) {
-            Enemy e = new Enemy(context, (double)i * 400, 300, 10, ThreadLocalRandom.current().nextDouble(200, 400),
+            Enemy e = new Enemy(context, (double)i * 600, 200, ThreadLocalRandom.current().nextDouble(200, 400),
                     ThreadLocalRandom.current().nextDouble(10, 50), animator);
-            e.gameCamera = new GameCamera(displayMetrics.widthPixels, displayMetrics.heightPixels, e, mapLayout);
             enemyList.add(e);
         }
 
@@ -236,7 +236,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         player.draw(canvas, gameCamera);
 
         //Draw enemies
-        enemyList.forEach(enemy -> enemy.draw(canvas, enemy.gameCamera));
+        enemyList.forEach(enemy -> enemy.draw(canvas, gameCamera));
 
         //draw tilemap
         tileMap.draw(canvas, gameCamera);
@@ -273,7 +273,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         //Draw enemies
-        enemyList.forEach(enemy -> enemy.update(enemy.gameCamera, tileMap));
+        enemyList.forEach(enemy -> enemy.update(gameCamera, tileMap));
 
         //Check for collision in X
         /*
@@ -293,7 +293,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
 
         enemyList.forEach(enemy -> {
-            if(tileMap.isColliding(enemy, enemy.gameCamera, false, true)) {
+            if(tileMap.isColliding(enemy, gameCamera, false, true)) {
                 //Log.d("Game.java", "collisionStatusY = true");
                 enemy.moveBackY();
                 enemy.setPlayerVelocityY(0);
@@ -306,12 +306,26 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             player.setHealthHearts(0);
         }
 
+        List<Enemy> deadEnemies = new ArrayList<>();
+        Rect playerRect = player.getFuturePlayerRect(gameCamera);
+        enemyList.forEach(enemy -> {
+            if(enemy.getPositionY() > gameCamera.getMapBottomY()) {
+                deadEnemies.add(enemy);
+            }
+            else {
+                Rect enemyRect = enemy.getPlayerRect(gameCamera);
+//                Log.d("Game.java", "" + gameCamera.gameToDisplayCoordinatesY(enemyRect.top) + "  " + enemy.getPositionY() + "  " + playerRect.bottom);
+                if (enemyRect.intersect(playerRect)) {
+                    if (enemyRect.top >= playerRect.bottom) {
+                        deadEnemies.add(enemy);
+                    } else {
+                        player.setHealthHearts(player.getHealthHearts()-1);
+                    }
+                }
+            }
+        });
 
-//        enemyList.forEach(enemy -> {
-//            if(enemy.getPositionY() > gameCamera.getMapBottomY()) {
-//                enemyList.remove(enemy);
-//            }
-//        });
+        deadEnemies.forEach(enemy -> enemyList.remove(enemy));
 
         //update game panel
 
