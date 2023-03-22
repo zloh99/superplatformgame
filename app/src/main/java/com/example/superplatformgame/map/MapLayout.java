@@ -4,6 +4,8 @@ import android.graphics.Rect;
 
 import com.example.superplatformgame.graphics.SpriteSheet;
 
+import java.util.Arrays;
+
 public class MapLayout {
     public static final int TILE_WIDTH_PIXELS = SpriteSheet.TILE_WIDTH_PIXELS;
     public static final int TILE_HEIGHT_PIXELS = SpriteSheet.TILE_HEIGHT_PIXELS;
@@ -41,11 +43,16 @@ public class MapLayout {
             boolean prevWasOverheadBlock = false;
 
             // generate random rows for all rows in between the first and last 7 rows
+            // generate random rows for all rows in between the first and last 7 rows
             for (int i = 7; i < numRows - 7; i++) {
                 double rand = Math.random();
                 if (rand < 0.3) {
                     tempLayout[i] = chasm;
                     prevWasOverheadBlock = false;
+                    if (i+1 < numRows - 7) { // check if there's still a row after the chasm
+                        tempLayout[i+1] = ground;
+                        tempLayout[i-1] = ground;// generate a ground array before/after chasm
+                    }
                 } else if (rand < 0.6) {
                     if (prevWasOverheadBlock) {
                         tempLayout[i] = ground;
@@ -57,6 +64,14 @@ public class MapLayout {
                 } else {
                     tempLayout[i] = pillar;
                     prevWasOverheadBlock = false;
+                }
+            }
+
+            // check for two consecutive chasm rows and replace the first one with ground array
+            for (int i = 7; i < numRows - 8; i++) {
+                if (Arrays.equals(tempLayout[i], chasm) && Arrays.equals(tempLayout[i+1], chasm)) {
+                    tempLayout[i] = ground;
+                    break;
                 }
             }
 
