@@ -99,8 +99,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Generate enemies
         int numEnemies = 2;
         for (int i = 0; i < numEnemies; i++) {
-            Enemy e = new Enemy(context, (double)i * 600, 200, ThreadLocalRandom.current().nextDouble(200, 400),
-                    ThreadLocalRandom.current().nextDouble(10, 50), animator);
+            Enemy e = new Enemy(context, (double)i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
+                    0, animator);
             enemyList.add(e);
         }
 
@@ -313,10 +313,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 deadEnemies.add(enemy);
             }
             else {
-                Rect enemyRect = enemy.getPlayerRect(gameCamera);
-//                Log.d("Game.java", "" + gameCamera.gameToDisplayCoordinatesY(enemyRect.top) + "  " + enemy.getPositionY() + "  " + playerRect.bottom);
+                Rect enemyRect = enemy.getFuturePlayerRect(gameCamera);
+                Log.d("Game.java", "Enemy top: " + gameCamera.gameToDisplayCoordinatesY(enemyRect.top) + "  " + enemy.getPositionY() + "  " + playerRect.bottom);
                 if (enemyRect.intersect(playerRect)) {
-                    if (enemyRect.top >= playerRect.bottom) {
+                    if ((enemyRect.top + SpriteSheet.SPRITE_HEIGHT_PIXELS/2) >= playerRect.bottom) {
                         deadEnemies.add(enemy);
                     } else {
                         player.setHealthHearts(player.getHealthHearts()-1);

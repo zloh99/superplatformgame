@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
@@ -103,7 +104,7 @@ public class Enemy extends Hitbox {
         //update the player's position as normal
         positionX += velocityX;
         positionY += velocityY;
-        //Log.d("Player.java", "PositionX: " + positionX + ", PositionY: " + positionY);
+        //Log.d("Enemy.java", "PositionX: " + positionX + ", PositionY: " + positionY);
 
         //update player state
         enemyState.update(tileMap, gameCamera);
