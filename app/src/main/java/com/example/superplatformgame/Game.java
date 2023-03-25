@@ -265,6 +265,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         */
 
         //check for collision in Y
+
+        if(!tileMap.isColliding(player, gameCamera, false, true)) {
+            //Log.d("Game.java", "collisionStatusY = false");
+            //player.setIsAirborne(true);
+            //Log.d("Game.java", "Airborne = true");
+            //player.setHealthHearts(player.getHealthHearts() - 1);
+        }
+
         if(tileMap.isColliding(player, gameCamera, false, true)) {
             //Log.d("Game.java", "collisionStatusY = true");
             player.moveBackY();

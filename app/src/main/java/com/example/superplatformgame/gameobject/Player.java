@@ -40,10 +40,11 @@ public class Player extends Hitbox {
     private Tilemap tileMap;
     private double previousPositionX;
     private double previousPositionY;
-    private boolean isAirborne; // not sure if needed
-    private boolean gravityOn; // not sure if needed
-    private double gravity; // not sure if needed
-    private HealthHearts healthHearts; // needed for health hearts
+
+    private boolean isAirborne;
+    private boolean gravityOn;
+    private double gravity;
+    private HealthHearts healthHearts;
 
 
     /**
