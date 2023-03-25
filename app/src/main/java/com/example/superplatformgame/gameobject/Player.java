@@ -30,8 +30,9 @@ public class Player extends Hitbox {
     public static final double SPEED_PIXELS_PER_SECOND = 30.0;
     public static final double MAX_SPEED = SPEED_PIXELS_PER_SECOND / GameLoop.MAX_UPS; //pixels/s divided by updates/s = pixels/update
     public static final double GRAVITY = 5; // acceleration due to gravity
+    public static final double GROUND = 573;
     public static final double BOUNCE_FACTOR = 0.7; // scale of how much the player bounces off the walls
-    public static final double JUMP_SPEED = 60; //how high player can jump
+    public static final double JUMP_SPEED = 90; //how high player can jump
     private final ButtonLeft buttonLeft;
     private final ButtonRight buttonRight;
     private final ButtonJump buttonJump;
@@ -119,7 +120,7 @@ public class Player extends Hitbox {
             velocityX = 0;
         }
         if (buttonJump.getState()) {
-            if (velocityY == 0) {
+            if (velocityY == 0 && positionY > GROUND) { // should only jump if its dy/dt is 0 and and its on the ground
                 //if jump button is pressed and current Y velocity = 0 (means that player is not jumping or falling), then player jumps.
                 velocityY -= JUMP_SPEED;
             }
@@ -127,7 +128,7 @@ public class Player extends Hitbox {
             //if jump button is not pressed, then do nothing and let gravity pull the player down
         }
 
-        //Log.d("Player.java", "VelocityX: " + velocityX + ", VelocityY: " + velocityY);
+        // Log.d("Player.java", "VelocityX: " + velocityX + ", VelocityY: " + velocityY);
 
         //apply gravity
         velocityY += GRAVITY;
@@ -140,7 +141,7 @@ public class Player extends Hitbox {
         //update the player's position as normal
         positionX += velocityX;
         positionY += velocityY;
-        //Log.d("Player.java", "PositionX: " + positionX + ", PositionY: " + positionY);
+        // Log.d("Player.java", "PositionX: " + positionX + ", PositionY: " + positionY);
 
 
         //update player state
