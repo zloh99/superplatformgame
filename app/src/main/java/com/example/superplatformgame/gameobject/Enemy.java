@@ -18,10 +18,9 @@ import com.example.superplatformgame.gamepanel.ButtonRight;
 import com.example.superplatformgame.graphics.SpriteSheet;
 import com.example.superplatformgame.map.Tilemap;
 
-public class Enemy extends Hitbox {
+public abstract class Enemy extends Hitbox {
     public static final double SPEED_PIXELS_PER_SECOND = 30.0;
     public static final double MAX_SPEED = SPEED_PIXELS_PER_SECOND / GameLoop.MAX_UPS; //pixels/s divided by updates/s = pixels/update
-    public static final double GRAVITY = 0; // acceleration due to gravity
     public static final double BOUNCE_FACTOR = 0.7; // scale of how much the player bounces off the walls
     public static final double JUMP_SPEED = 60; //how high player can jump
 
@@ -35,7 +34,9 @@ public class Enemy extends Hitbox {
 
     private double maxPositionX;
     private double minPositionX;
-
+    private double gravity;
+    private boolean damageable;
+    private int scorePoints;
 
     /**
      * Constructor for enemy class
@@ -69,17 +70,16 @@ public class Enemy extends Hitbox {
         return velocityY;
     }
 
-/*    public void moveBackX() {
-        //Log.d("Player.java", "Player moved back in x direction");
-        //velocityX += -MAX_SPEED;
-        //positionX = previousPositionX;
-    }*/
+//    public void moveBackX() {
+//        Log.d("Player.java", "Player moved back in x direction");
+//        velocityX += -MAX_SPEED;
+//        positionX = previousPositionX;
+//    }
 
     public void moveBackY() {
         //Log.d("Player.java", "Player moved back in y direction");
         positionY = previousPositionY;
     }
-
     @Override
     public void update(GameCamera gameCamera, Tilemap tileMap) {
         //update player velocity based on which button is pressed
@@ -94,7 +94,7 @@ public class Enemy extends Hitbox {
         //Log.d("Player.java", "VelocityX: " + velocityX + ", VelocityY: " + velocityY);
 
         //apply gravity
-        velocityY += GRAVITY;
+        velocityY += gravity;
         //Log.d("Player.java", "Gravity applied");
 
         //before player's position is updated, keep track of their current position and store it as the previous position
@@ -109,7 +109,6 @@ public class Enemy extends Hitbox {
         //update player state
         enemyState.update(tileMap, gameCamera);
     }
-
     public Rect getPlayerRect(GameCamera gameCamera){
         Rect playerRect = new Rect(
                 (int) gameCamera.gameToDisplayCoordinatesX(getPositionX()) - SpriteSheet.SPRITE_WIDTH_PIXELS/2,
@@ -120,7 +119,6 @@ public class Enemy extends Hitbox {
         //Log.d("Player.java", "futurePlayerRect.bottom: " + (int) gameCamera.gameToDisplayCoordinatesY(getPositionY() + SpriteSheet.SPRITE_HEIGHT_PIXELS/2+5));
         return playerRect;
     }
-
     public void draw(Canvas canvas, GameCamera gameCamera) {
         //animator draw method to draw sprite onto player location
 //        animator.draw(canvas, gameCamera, this);
@@ -129,13 +127,13 @@ public class Enemy extends Hitbox {
         paint.setColor(Color.RED);
         canvas.drawRect(getPlayerRect(gameCamera), paint);
     }
-
     @Override
     public void update() {
         //empty method to match superclass
     }
-
-
+    public void setGravity(double gravity) {
+        this.gravity = gravity;
+    }
     public Rect getFuturePlayerRect(GameCamera gameCamera){
         //get a rectangle that is bounded over player's sprite + their velocity
         Rect playerRect = new Rect(
@@ -145,6 +143,18 @@ public class Enemy extends Hitbox {
                 (int) (gameCamera.gameToDisplayCoordinatesY(getPositionY()) + SpriteSheet.SPRITE_HEIGHT_PIXELS/2 + velocityY)
         );
         return playerRect;
+    }
+    public boolean getDamageable() {
+        return damageable;
+    }
+    public void setDamageable(boolean damageable) {
+        this.damageable = damageable;
+    }
+    public int getScorePoints() {
+        return this.scorePoints;
+    }
+    public void setScorePoints(int scorePoints) {
+        this.scorePoints = scorePoints;
     }
 
 }

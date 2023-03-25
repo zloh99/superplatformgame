@@ -16,6 +16,8 @@ import com.example.superplatformgame.map.Tilemap;
 public abstract class Hitbox extends GameObject {
     protected double radius;
     protected Paint paint;
+    private int iFrames;
+    private long score;
 
     public Hitbox(Context context, int color, double positionX, double positionY, double radius) {
         super(positionX, positionY);
@@ -25,6 +27,23 @@ public abstract class Hitbox extends GameObject {
         paint = new Paint();
         paint.setColor(color);
     }
+
+    public int getIFrames() {
+        return iFrames;
+    }
+
+    public void setIFrames(int iFrames) {
+        this.iFrames = iFrames;
+    }
+
+    public long getScore() {
+        return score;
+    }
+
+    public void setScore(long score) {
+        this.score = score;
+    }
+
 
 //    public static boolean isColliding(Hitbox obj1, Hitbox obj2) {
  //       double distance = getDistanceBetweenObjects(obj1, obj2);
@@ -40,6 +59,9 @@ public abstract class Hitbox extends GameObject {
 
     public abstract void update(GameCamera gameCamera, Tilemap tileMap);
 
+    public void setPositionY(double positionY) {
+        this.positionY = positionY;
+    }
     public void draw(Canvas canvas, GameCamera gameCamera) {
         canvas.drawCircle(
                 (float) gameCamera.gameToDisplayCoordinatesX(positionX),
