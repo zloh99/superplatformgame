@@ -3,6 +3,7 @@ package com.example.superplatformgame;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.superplatformgame.gameobject.Animator;
+import com.example.superplatformgame.gameobject.Enemy;
 import com.example.superplatformgame.gameobject.GameObject;
 import com.example.superplatformgame.gameobject.HealthHearts;
 import com.example.superplatformgame.gameobject.Player;
@@ -30,6 +32,7 @@ import com.example.superplatformgame.map.Tilemap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The game class handles everything in the game, including the game loop, drawing all objects to the canvas,
@@ -44,6 +47,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     //private SkyBox skyBox;
     private List<SkyBox> skyBoxList = new ArrayList<SkyBox>(); //list to keep track of how many skybox objects there are
 
+    private List<Enemy> enemyList = new ArrayList<>();
     private Tilemap tileMap; //tilemap object
     private ButtonLeft buttonLeft; //button to move player left
     private int buttonLeftId = 0; //id to store individual touch events happening on the left button
@@ -84,11 +88,21 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Initialise game display and center it around the player
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        gameCamera = new GameCamera(displayMetrics.widthPixels, displayMetrics.heightPixels, player, new MapLayout(Tilemap.MapType.GRASS_MAP));
+
+        MapLayout mapLayout = new MapLayout(Tilemap.MapType.GRASS_MAP);
+        gameCamera = new GameCamera(displayMetrics.widthPixels, displayMetrics.heightPixels, player, mapLayout);
 
         //Initialise game graphics
         skyBoxList.add(new SkyBox(spriteSheet));
         tileMap = new Tilemap(spriteSheet);
+
+        //Generate enemies
+        int numEnemies = 2;
+        for (int i = 0; i < numEnemies; i++) {
+            Enemy e = new Enemy(context, (double)i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
+                    0, animator);
+            enemyList.add(e);
+        }
 
         setFocusable(true);
     }
@@ -221,6 +235,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Draw game objects
         player.draw(canvas, gameCamera);
 
+        //Draw enemies
+        enemyList.forEach(enemy -> enemy.draw(canvas, gameCamera));
+
         //draw tilemap
         tileMap.draw(canvas, gameCamera);
 
@@ -255,6 +272,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             //Log.d("Game.java", "Add Skybox");
         }
 
+        //Draw enemies
+        enemyList.forEach(enemy -> enemy.update(gameCamera, tileMap));
+
         //Check for collision in X
         /*
         if(tileMap.isColliding(player, gameCamera, true, false)) {
@@ -279,10 +299,41 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             player.setPlayerVelocityY(0);
         }
 
+
+        enemyList.forEach(enemy -> {
+            if(tileMap.isColliding(enemy, gameCamera, false, true)) {
+                //Log.d("Game.java", "collisionStatusY = true");
+                enemy.moveBackY();
+                enemy.setPlayerVelocityY(0);
+            }
+        });
+
+
         //check if player has fallen into a chasm
         if(player.getPositionY() > gameCamera.getMapBottomY()) {
             player.setHealthHearts(0);
         }
+
+        List<Enemy> deadEnemies = new ArrayList<>();
+        Rect playerRect = player.getFuturePlayerRect(gameCamera);
+        enemyList.forEach(enemy -> {
+            if(enemy.getPositionY() > gameCamera.getMapBottomY()) {
+                deadEnemies.add(enemy);
+            }
+            else {
+                Rect enemyRect = enemy.getFuturePlayerRect(gameCamera);
+                Log.d("Game.java", "Enemy top: " + gameCamera.gameToDisplayCoordinatesY(enemyRect.top) + "  " + enemy.getPositionY() + "  " + playerRect.bottom);
+                if (enemyRect.intersect(playerRect)) {
+                    if ((enemyRect.top + SpriteSheet.SPRITE_HEIGHT_PIXELS/2) >= playerRect.bottom) {
+                        deadEnemies.add(enemy);
+                    } else {
+                        player.setHealthHearts(player.getHealthHearts()-1);
+                    }
+                }
+            }
+        });
+
+        deadEnemies.forEach(enemy -> enemyList.remove(enemy));
 
         //update game panel
 
