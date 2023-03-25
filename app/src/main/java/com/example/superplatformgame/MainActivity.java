@@ -31,6 +31,7 @@ public class MainActivity extends Activity {
 
         //Set content view to game, so that only objects in the game class can be rendered to screen
         game = new Game(this);
+        game.reset(game.getContext());
         setContentView(game);
     }
 
