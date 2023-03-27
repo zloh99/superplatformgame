@@ -18,7 +18,7 @@ import com.example.superplatformgame.gamepanel.ButtonRight;
 import com.example.superplatformgame.graphics.SpriteSheet;
 import com.example.superplatformgame.map.Tilemap;
 
-public abstract class Enemy extends Hitbox {
+public class Enemy extends Hitbox {
     public static final double SPEED_PIXELS_PER_SECOND = 30.0;
     public static final double MAX_SPEED = SPEED_PIXELS_PER_SECOND / GameLoop.MAX_UPS; //pixels/s divided by updates/s = pixels/update
     public static final double BOUNCE_FACTOR = 0.7; // scale of how much the player bounces off the walls
@@ -120,8 +120,7 @@ public abstract class Enemy extends Hitbox {
         return playerRect;
     }
     public void draw(Canvas canvas, GameCamera gameCamera) {
-        //animator draw method to draw sprite onto player location
-        animator.drawEnemy(canvas, gameCamera, this);
+            animator.drawEnemy(canvas, gameCamera, this);
 
 //        paint = new Paint();
 //        paint.setColor(Color.RED);
@@ -156,6 +155,11 @@ public abstract class Enemy extends Hitbox {
 
     public EnemyState getEnemyState() {
         return enemyState;
+    }
+
+    @Override
+    public void update() {
+        //empty method to match superclass
     }
 
 }

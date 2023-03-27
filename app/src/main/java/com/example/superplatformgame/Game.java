@@ -78,7 +78,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Initialise game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
-        Animator animator = new Animator(spriteSheet.getPlayerSpriteArray());
+        Animator animator = new Animator(spriteSheet.getPlayerSpriteArray(), spriteSheet.getEnemySpriteArray());
         player = new Player(context, buttonLeft, buttonRight, buttonJump, 1000, 200, 32, animator);
 
         healthHearts = new HealthHearts(context, player);
@@ -137,7 +137,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Initialise game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
-        Animator animator = new Animator(spriteSheet.getPlayerSpriteArray());
+        Animator animator = new Animator(spriteSheet.getPlayerSpriteArray(), spriteSheet.getEnemySpriteArray());
         player = new Player(context, buttonLeft, buttonRight, buttonJump, 1000, 200, 32, animator);
 
         healthHearts = new HealthHearts(context, player);
