@@ -120,8 +120,7 @@ public class Enemy extends Hitbox {
         return playerRect;
     }
     public void draw(Canvas canvas, GameCamera gameCamera) {
-            animator.drawEnemy(canvas, gameCamera, this);
-
+        animator.drawEnemy(canvas, gameCamera, this);
 //        paint = new Paint();
 //        paint.setColor(Color.RED);
 //        canvas.drawRect(getPlayerRect(gameCamera), paint);

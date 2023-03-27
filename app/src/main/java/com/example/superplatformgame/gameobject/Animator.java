@@ -12,14 +12,7 @@ public class Animator {
 
     private static final int MAX_UPDATES_BEFORE_NEXT_MOVE_FRAME = 5; //control how fast different frames are animated
     private Sprite[] playerSpriteArray;
-
     private Sprite[] enemySpriteArray;
-
-//    private Sprite[] wolfSpriteArray;
-//
-//    private Sprite[] sawSpriteArray;
-//
-//    private Sprite[] birdSpriteArray;
     private int idxNotMovingFrameRight = 1; //index of the idle frame when player is facing right
     private int idxNotMovingFrameLeft = 9; //index of the idle frame when player is facing left
     private int idxMovingFrame = 2; //index of the moving frame
@@ -28,12 +21,8 @@ public class Animator {
     private int updatesBeforeNextMoveFrame;
 
     public Animator(Sprite[] playerSpriteArray, Sprite[] enemySpriteArray) {
-        // Sprite[] wolfSpriteArray, Sprite[] sawSpriteArray, Sprite[] birdSpriteArray
         this.playerSpriteArray = playerSpriteArray;
         this.enemySpriteArray = enemySpriteArray;
-//        this.wolfSpriteArray = wolfSpriteArray;
-//        this.sawSpriteArray = sawSpriteArray;
-//        this.birdSpriteArray = birdSpriteArray;
     }
 
     public void draw(Canvas canvas, GameCamera gameCamera, Player player) {
@@ -122,7 +111,7 @@ public class Animator {
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
                     (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
             );
-        } else {
+        } else if (enemy instanceof Bird) {
             sprite.drawBirdRight(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
@@ -145,7 +134,7 @@ public class Animator {
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth() / 2, //remember to add the reference to gameCamera when collision and levels are done
                     (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight() / 2 //remember to add the reference to gameCamera when collision and levels are done
             );
-        } else {
+        } else if (enemy instanceof Bird) {
             sprite.drawBirdLeft(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth() / 2, //remember to add the reference to gameCamera when collision and levels are done
@@ -154,23 +143,6 @@ public class Animator {
         }
     }
 
-//    private void drawFrameRightWolf(Canvas canvas, GameCamera gameCamera, Enemy enemy, Sprite sprite) {
-//        //draw sprite based on player location
-//        sprite.drawWolfRight(
-//                canvas,
-//                (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-//                (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
-//        );
-//    }
-//
-//    private void drawFrameLeftWolf(Canvas canvas, GameCamera gameCamera, Enemy enemy, Sprite sprite) {
-//        //draw sprite based on player location
-//        sprite.drawWolfLeft(
-//                canvas,
-//                (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-//                (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
-//        );
-//    }
 
     private void toggleIdxMovingFrameLeftEnemy() {
         //every update loop, if enemy is moving, then alternate between 2 different frames
@@ -227,43 +199,6 @@ public class Animator {
         }
     }
 
-    private void drawFrameRightSaw(Canvas canvas, GameCamera gameCamera, Saw saw, Sprite sprite) {
-        //draw sprite based on player location
-        sprite.drawSawRight(
-                canvas,
-                (int) gameCamera.gameToDisplayCoordinatesX(saw.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-                (int) gameCamera.gameToDisplayCoordinatesY(saw.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
-        );
-    }
-
-    private void drawFrameLeftSaw(Canvas canvas, GameCamera gameCamera, Saw saw, Sprite sprite) {
-        //draw sprite based on player location
-        sprite.drawSawLeft(
-                canvas,
-                (int) gameCamera.gameToDisplayCoordinatesX(saw.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-                (int) gameCamera.gameToDisplayCoordinatesY(saw.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
-        );
-    }
-
-
-
-    private void drawFrameRightBird(Canvas canvas, GameCamera gameCamera, Bird bird, Sprite sprite) {
-        //draw sprite based on player location
-        sprite.drawWolfRight(
-                canvas,
-                (int) gameCamera.gameToDisplayCoordinatesX(bird.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-                (int) gameCamera.gameToDisplayCoordinatesY(bird.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
-        );
-    }
-
-    private void drawFrameLeftBird(Canvas canvas, GameCamera gameCamera, Bird bird, Sprite sprite) {
-        //draw sprite based on player location
-        sprite.drawWolfLeft(
-                canvas,
-                (int) gameCamera.gameToDisplayCoordinatesX(bird.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-                (int) gameCamera.gameToDisplayCoordinatesY(bird.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
-        );
-    }
 }
 
 

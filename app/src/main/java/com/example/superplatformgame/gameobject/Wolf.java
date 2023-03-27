@@ -19,7 +19,6 @@ public class Wolf extends Enemy{
      * @param velocity
      * @param animator
      */
-    private Animator animator;
     
     public Wolf(Context context, double positionX, double positionY, double width, double velocity, Animator animator) {
         super(context, positionX, positionY, width, velocity, animator);
@@ -28,12 +27,4 @@ public class Wolf extends Enemy{
         setScorePoints(20);
     }
 
-    public void draw(Canvas canvas, GameCamera gameCamera) {
-        //animator draw method to draw sprite onto player location
-        animator.drawEnemy(canvas, gameCamera, this);
-
-//        paint = new Paint();
-//        paint.setColor(Color.RED);
-//        canvas.drawRect(getPlayerRect(gameCamera), paint);
-    }
 }
