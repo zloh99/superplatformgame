@@ -121,16 +121,13 @@ public abstract class Enemy extends Hitbox {
     }
     public void draw(Canvas canvas, GameCamera gameCamera) {
         //animator draw method to draw sprite onto player location
-//        animator.draw(canvas, gameCamera, this);
+        animator.drawEnemy(canvas, gameCamera, this);
 
-        paint = new Paint();
-        paint.setColor(Color.RED);
-        canvas.drawRect(getPlayerRect(gameCamera), paint);
+//        paint = new Paint();
+//        paint.setColor(Color.RED);
+//        canvas.drawRect(getPlayerRect(gameCamera), paint);
     }
-    @Override
-    public void update() {
-        //empty method to match superclass
-    }
+
     public void setGravity(double gravity) {
         this.gravity = gravity;
     }
@@ -155,6 +152,10 @@ public abstract class Enemy extends Hitbox {
     }
     public void setScorePoints(int scorePoints) {
         this.scorePoints = scorePoints;
+    }
+
+    public EnemyState getEnemyState() {
+        return enemyState;
     }
 
 }
