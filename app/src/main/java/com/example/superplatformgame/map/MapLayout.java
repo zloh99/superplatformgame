@@ -21,12 +21,12 @@ public class MapLayout {
         return layout;
     }
 
-
     private void initializeLayout(Tilemap.MapType mapType) {
         int[] ground = {0, 0, 0, 0, 2, 1, 1, 1};
         int[] pillar = {0, 0, 0, 2, 1, 1, 1, 1};
         int[] chasm = {0, 0, 0, 0, 0, 0, 0, 0};
-        int[] overhead_block = {0, 2, 0, 0, 2, 1, 1, 1};
+        int[] overhead_block = {0, 0, 0, 0, 2, 1, 1, 1};
+        int[] winning_tile = {0, 0, 0, 3, 2, 1, 1, 1};
 
         if (mapType == Tilemap.MapType.GRASS_MAP) {
             int[][] untransposedMatrix = new int[25][]; // set the map distance from start to end as 25 blocks wide.
@@ -49,9 +49,9 @@ public class MapLayout {
                 if (rand < 0.3) {
                     tempLayout[i] = chasm;
                     prevWasOverheadBlock = false;
-                    if (i+1 < numRows - 7) { // check if there's still a row after the chasm
-                        tempLayout[i+1] = ground;
-                        tempLayout[i-1] = ground;// generate a ground array before/after chasm
+                    if (i + 1 < numRows - 7) { // check if there's still a row after the chasm
+                        tempLayout[i + 1] = ground;
+                        tempLayout[i - 1] = ground;// generate a ground array before/after chasm
                     }
                 } else if (rand < 0.6) {
                     if (prevWasOverheadBlock) {
@@ -69,7 +69,7 @@ public class MapLayout {
 
             // check for two consecutive chasm rows and replace the first one with ground array
             for (int i = 7; i < numRows - 8; i++) {
-                if (Arrays.equals(tempLayout[i], chasm) && Arrays.equals(tempLayout[i+1], chasm)) {
+                if (Arrays.equals(tempLayout[i], chasm) && Arrays.equals(tempLayout[i + 1], chasm)) {
                     tempLayout[i] = ground;
                     break;
                 }
@@ -80,7 +80,8 @@ public class MapLayout {
                 tempLayout[i] = untransposedMatrix[i];
             }
             for (int i = numRows - 7; i < numRows; i++) {
-                tempLayout[i] = untransposedMatrix[i];
+                // insert winning tile at the end of the map
+                tempLayout[i] = (i == numRows - 1) ? winning_tile : untransposedMatrix[i];
             }
 
             // transpose untransposedMatrix and assign the result to layout
@@ -92,8 +93,6 @@ public class MapLayout {
             }
         }
     }
-
-
 
 
     public int getLayoutTileHeight(int[][] layout) {
@@ -114,15 +113,12 @@ public class MapLayout {
         try {
             if (layout[y][x] < 1) {
                 return false;
-            }
-            else {
+            } else {
                 return true;
             }
-        }
-        catch (ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             //do nothing
         }
         return false;
     }
-
 }
