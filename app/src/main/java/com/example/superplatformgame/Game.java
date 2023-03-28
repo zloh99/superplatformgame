@@ -96,9 +96,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Generate enemies
         int numEnemies = 2;
-        double probWolves = 0.5;
-        double probBirds = 0.3;
-        double probSaws = 0.2;
+        double probWolves = 0.0;
+        double probBirds = 1; //0.3
+        double probSaws = 0.0; //0.2
 
         for (int i = 0; i < numEnemies; i++) {
             double probability = Math.random();

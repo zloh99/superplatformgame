@@ -1,9 +1,19 @@
 package com.example.superplatformgame.gameobject;
 
+import static com.example.superplatformgame.graphics.SpriteSheet.ENEMY_HEIGHT_PIXELS;
+import static com.example.superplatformgame.graphics.SpriteSheet.ENEMY_WIDTH_PIXELS;
+
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.util.Log;
 
 import com.example.superplatformgame.GameCamera;
+import com.example.superplatformgame.R;
 import com.example.superplatformgame.graphics.Sprite;
+import com.example.superplatformgame.graphics.SpriteSheet;
 
 /**
  * Animator is a class that handles drawing the player sprites to screen based on the player's state and player coordinates
@@ -103,13 +113,23 @@ public class Animator {
             sprite.drawWolfRight(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
+                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 35 //remember to add the reference to gameCamera when collision and levels are done
             );
         } else if (enemy instanceof Saw) {
+            //Log.d("Animator.java", "SawRight");
+/*            Paint paint = new Paint();
+            paint.setColor(Color.RED);
+            canvas.drawRect(
+                    (float) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth()/2,
+                    (float) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2,
+                    (float) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) + sprite.getWidth()/2,
+                    (float) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) + sprite.getHeight()/2,
+                    paint
+            );*/
             sprite.drawSawRight(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
+                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 35 //remember to add the reference to gameCamera when collision and levels are done
             );
         } else if (enemy instanceof Bird) {
             sprite.drawBirdRight(
@@ -126,19 +146,19 @@ public class Animator {
             sprite.drawWolfLeft(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth() / 2, //remember to add the reference to gameCamera when collision and levels are done
-                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight() / 2 //remember to add the reference to gameCamera when collision and levels are done
+                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 35//remember to add the reference to gameCamera when collision and levels are done
             );
         } else if (enemy instanceof Saw) {
             sprite.drawSawLeft(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth() / 2, //remember to add the reference to gameCamera when collision and levels are done
-                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight() / 2 //remember to add the reference to gameCamera when collision and levels are done
+                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 35 //remember to add the reference to gameCamera when collision and levels are done
             );
         } else if (enemy instanceof Bird) {
             sprite.drawBirdLeft(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth() / 2, //remember to add the reference to gameCamera when collision and levels are done
-                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight() / 2 //remember to add the reference to gameCamera when collision and levels are done
+                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 35 //remember to add the reference to gameCamera when collision and levels are done
             );
         }
     }
@@ -163,7 +183,7 @@ public class Animator {
     }
 
     public void drawEnemy(Canvas canvas, GameCamera gameCamera, Enemy enemy) {
-        //method to decide which frame to draw to the player
+        //method to decide which frame to draw to the enemy
 
         switch (enemy.getEnemyState().getState()) {
             case NOT_MOVING_RIGHT:
