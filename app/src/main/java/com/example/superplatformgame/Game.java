@@ -55,6 +55,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private int buttonJumpId = 0; //id to store individual touch events happening on the jump button
     private HealthHearts healthHearts;
     private GameOver gameOver; // check game over
+    private GameWin gameWin;
 
 
 
@@ -75,6 +76,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         buttonRight = new ButtonRight(context, 300, 850, 150, 150);
         buttonJump = new ButtonJump(context, 1850, 860, 140, 140);
         gameOver = new GameOver(getContext());
+        gameWin = new GameWin(getContext());
 
         //Initialise game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
@@ -96,15 +98,15 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Generate enemies
         int numEnemies = 2;
-        double probWolves = 0.0;
-        double probBirds = 1; //0.3
+        double probWolves = 1;
+        double probBirds = 0; //0.3
         double probSaws = 0.0; //0.2
 
         for (int i = 0; i < numEnemies; i++) {
             double probability = Math.random();
             if (probability < probWolves) {
                 Enemy e = new Wolf(context, (double) i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
-                        0, animator);
+                        50, animator);
                 enemyList.add(e);
             } else if (probability-probWolves < probBirds) {
                 Enemy e = new Bird(context, (double) i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
@@ -134,6 +136,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         buttonRight = new ButtonRight(context, 300, 850, 150, 150);
         buttonJump = new ButtonJump(context, 1850, 860, 140, 140);
         gameOver = new GameOver(getContext());
+        gameWin = new GameWin(getContext());
 
         //Initialise game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
@@ -212,6 +215,23 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                             Log.d("Game.java", "Thread is still running");
                         }
                     }
+                } else if (tileMap.atSpaceship(player, gameCamera, true, false) || tileMap.atSpaceship(player, gameCamera, false, true)) {
+                    //this means there is a game win screen
+                    if (gameWin.isPressed((double) event.getX(), (double) event.getY())) {
+                        gameWin.setIsPressed(true);
+                        Log.d("Game.java", "Game Won");
+                        Log.d("Game.java", "isRunning = " + gameLoop.getIsRunning());
+                        if (gameLoop.getState().equals(Thread.State.TERMINATED)) {
+                            Log.d("Game.java", "Loading new game...");
+                            gameLoop = new GameLoop(this, getHolder());
+                            reset(getContext());
+                            gameLoop.startLoop();//check state of thread to see if it is terminated
+                            //then we instantiate a new gameLoop object, because a thread object can only be run once until it is destroyed,
+                            // so if we wanna run it again we have to create a new one
+                        } else {
+                            Log.d("Game.java", "Thread is still running");
+                        }
+                    }
                 }
                 return true;
 
@@ -266,6 +286,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             gameOver.draw(canvas);
         }
 
+        //if spaceship reached, draw game win screen
+        if(tileMap.atSpaceship(player, gameCamera, true, false) || tileMap.atSpaceship(player, gameCamera, false, true)) {
+            gameWin.draw(canvas);
+        }
+
     }
 
     public void update() {
@@ -299,19 +324,25 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //check for collision in Y
 
-        if(!tileMap.isColliding(player, gameCamera, false, true)) {
-            //Log.d("Game.java", "collisionStatusY = false");
-            //player.setIsAirborne(true);
-            //Log.d("Game.java", "Airborne = true");
-            //player.setHealthHearts(player.getHealthHearts() - 1);
-        }
-
         if(tileMap.isColliding(player, gameCamera, false, true)) {
             //Log.d("Game.java", "collisionStatusY = true");
             player.moveBackY();
             player.setPlayerVelocityY(0);
         }
 
+        //check for X collision with spaceship tile (win condition)
+        if(tileMap.atSpaceship(player, gameCamera, true, false)) {
+            //Log.d("Game.java", "atSpaceshipX = true");
+            gameLoop.stopLoop();
+            return;
+        }
+
+        //check for Y collision with spaceship tile (win condition)
+        if(tileMap.atSpaceship(player, gameCamera, false, true)) {
+            //Log.d("Game.java", "atSpaceshipY = true");
+            gameLoop.stopLoop();
+            return;
+        }
 
         enemyList.forEach(enemy -> {
             if(tileMap.isColliding(enemy, gameCamera, false, true)) {

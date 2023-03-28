@@ -162,4 +162,38 @@ public class Tilemap {
         //Log.d("Tilemap.java", "Collision NOT detected");
         return false;
     }
+
+    public boolean atSpaceship(Hitbox hitbox, GameCamera gameCamera, boolean checkX, boolean checkY) {
+        //get player rectangle
+        Rect playerRect = hitbox.getFuturePlayerRect(gameCamera);
+
+        //iterate through every invisible rectangle in rectLayout and check to see if there is intersection between spaceship tile and the player rectangle
+        for (int row = 0; row < rectLayout.size(); row++) {
+            for (int col = 0; col < rectLayout.get(row).size(); col++) {
+                Rect tileRect = rectLayout.get(row).get(col);
+                if(tileRect != null) {
+                    if (checkX && tileRect.intersect(playerRect.left, playerRect.top, playerRect.right, playerRect.bottom)) {
+                        //checkX is just a flag to indicate to check for X collision
+                        if(mapLayout.atSpaceship(col, row)) {
+                            //collision detected in x direction
+                            //Log.d("Tilemap.java", "Collision detected in x direction");
+                            return true;
+                        }
+                    }
+                    if (checkY && tileRect.intersect(playerRect.left, playerRect.top, playerRect.right, playerRect.bottom)) {
+                        //checkY is just a flag to indicate to check for X collision
+                        if(mapLayout.atSpaceship(col, row)) {
+                            //collision detected in y direction
+                            //Log.d("Tilemap.java", "Collision detected in y direction");
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        //collision not detected
+        //Log.d("Tilemap.java", "Collision NOT detected");
+        return false;
+    }
+
 }
