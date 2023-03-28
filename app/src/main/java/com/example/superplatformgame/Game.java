@@ -194,11 +194,15 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     //check if right button is pressed
                     buttonRightId = event.getPointerId(event.getActionIndex());
                     buttonRight.setIsPressed(true);
-                } else if (buttonJump.isPressed((double) event.getX(), (double) event.getY())) {
+                }
+
+                if (buttonJump.isPressed((double) event.getX(), (double) event.getY())) {
                     //check if the jump button is pressed
                     buttonJumpId = event.getPointerId(event.getActionIndex());
                     buttonJump.setIsPressed(true);
-                } else if (player.getHealthHearts() <= 0) {
+                }
+
+                if (player.getHealthHearts() <= 0) {
                     //check if there is a game over screen
                     if (gameOver.isPressed((double) event.getX(), (double) event.getY())) {
                         gameOver.setIsPressed(true);
@@ -215,7 +219,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                             Log.d("Game.java", "Thread is still running");
                         }
                     }
-                } else if (tileMap.atSpaceship(player, gameCamera, true, false) || tileMap.atSpaceship(player, gameCamera, false, true)) {
+                }
+
+                if (tileMap.atSpaceship(player, gameCamera, true, false) || tileMap.atSpaceship(player, gameCamera, false, true)) {
                     //this means there is a game win screen
                     if (gameWin.isPressed((double) event.getX(), (double) event.getY())) {
                         gameWin.setIsPressed(true);
