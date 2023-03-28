@@ -22,6 +22,7 @@ public abstract class Hitbox extends GameObject {
     public Hitbox(Context context, int color, double positionX, double positionY, double radius) {
         super(positionX, positionY);
         this.radius = radius;
+        this.score = 0;
 
         //Set color of circle
         paint = new Paint();

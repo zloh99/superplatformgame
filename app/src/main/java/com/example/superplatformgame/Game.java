@@ -22,6 +22,7 @@ import com.example.superplatformgame.gameobject.Wolf;
 import com.example.superplatformgame.gamepanel.ButtonJump;
 import com.example.superplatformgame.gamepanel.ButtonLeft;
 import com.example.superplatformgame.gamepanel.ButtonRight;
+import com.example.superplatformgame.gamepanel.GameScore;
 import com.example.superplatformgame.gamepanel.Performance;
 import com.example.superplatformgame.graphics.SkyBox;
 import com.example.superplatformgame.graphics.SpriteSheet;
@@ -56,6 +57,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private HealthHearts healthHearts;
     private GameOver gameOver; // check game over
     private GameWin gameWin;
+    private GameScore gameScore;
 
 
 
@@ -71,7 +73,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         gameLoop = new GameLoop(this, surfaceHolder);
 
         //Initialise game panels (all graphical objects that do not interact with any game objects)
-        performance = new Performance(context, gameLoop);
+        //performance = new Performance(context, gameLoop);
         buttonLeft = new ButtonLeft(context, 100, 850, 150, 150);
         buttonRight = new ButtonRight(context, 300, 850, 150, 150);
         buttonJump = new ButtonJump(context, 1850, 860, 140, 140);
@@ -89,6 +91,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
+        gameScore = new GameScore(context, player);
+
         MapLayout mapLayout = new MapLayout(Tilemap.MapType.GRASS_MAP);
         gameCamera = new GameCamera(displayMetrics.widthPixels, displayMetrics.heightPixels, player, mapLayout);
 
@@ -98,22 +102,22 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Generate enemies
         int numEnemies = 2;
-        double probWolves = 1;
-        double probBirds = 0; //0.3
-        double probSaws = 0.0; //0.2
+        double probWolves = 0.6;
+        double probBirds = 0.4;
+        double probSaws = 0.0;
 
         for (int i = 0; i < numEnemies; i++) {
             double probability = Math.random();
             if (probability < probWolves) {
-                Enemy e = new Wolf(context, (double) i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
-                        50, animator);
+                Enemy e = new Wolf(context, (double) i * 800 + 500, 500, ThreadLocalRandom.current().nextDouble(200, 400),
+                        10, animator);
                 enemyList.add(e);
             } else if (probability-probWolves < probBirds) {
-                Enemy e = new Bird(context, (double) i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
-                        0, animator);
+                Enemy e = new Bird(context, (double) i * 800 + 500, 300, ThreadLocalRandom.current().nextDouble(200, 400),
+                        10, animator);
                 enemyList.add(e);
             } else {
-                Enemy e = new Saw(context, (double) i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
+                Enemy e = new Saw(context, (double) i * 600 + 500, 500, ThreadLocalRandom.current().nextDouble(200, 400),
                         0, animator);
                 enemyList.add(e);
             }
@@ -148,6 +152,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Initialise game display and center it around the player
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        gameScore = new GameScore(context, player);
         gameCamera = new GameCamera(displayMetrics.widthPixels, displayMetrics.heightPixels, player, new MapLayout(Tilemap.MapType.GRASS_MAP));
 
         //Initialise game graphics
@@ -187,19 +193,44 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             case MotionEvent.ACTION_POINTER_DOWN:
                 //do stuff here when button is pressed
                 if (buttonLeft.isPressed((double) event.getX(), (double) event.getY())) {
+                    if (buttonJump.getState()) {
+                        //check if jump button is also being pressed
+                        buttonJump.setIsPressed(true);
+                        buttonLeftId = event.getPointerId(event.getActionIndex());
+                        buttonLeft.setIsPressed(true);
+                    } else {
                     //check if left button is pressed
                     buttonLeftId = event.getPointerId(event.getActionIndex());
-                    buttonLeft.setIsPressed(true);
+                    buttonLeft.setIsPressed(true);}
                 } else if (buttonRight.isPressed((double) event.getX(), (double) event.getY())) {
-                    //check if right button is pressed
-                    buttonRightId = event.getPointerId(event.getActionIndex());
-                    buttonRight.setIsPressed(true);
+                    if (buttonJump.getState()) {
+                        //check if jump button is also being pressed
+                        buttonJump.setIsPressed(true);
+                        buttonRightId = event.getPointerId(event.getActionIndex());
+                        buttonRight.setIsPressed(true);
+                    } else {
+                        //check if right button is pressed
+                        buttonRightId = event.getPointerId(event.getActionIndex());
+                        buttonRight.setIsPressed(true);
+                    }
                 }
 
                 if (buttonJump.isPressed((double) event.getX(), (double) event.getY())) {
-                    //check if the jump button is pressed
-                    buttonJumpId = event.getPointerId(event.getActionIndex());
-                    buttonJump.setIsPressed(true);
+                    if (buttonLeft.getState()) {
+                        //check if left button is also being pressed
+                        buttonLeft.setIsPressed(true);
+                        buttonJumpId = event.getPointerId(event.getActionIndex());
+                        buttonJump.setIsPressed(true);
+                    } else if (buttonRight.getState()) {
+                        //check if right button is also being pressed
+                        buttonRight.setIsPressed(true);
+                        buttonJumpId = event.getPointerId(event.getActionIndex());
+                        buttonJump.setIsPressed(true);
+                    } else {
+                        //check if the jump button is pressed
+                        buttonJumpId = event.getPointerId(event.getActionIndex());
+                        buttonJump.setIsPressed(true);
+                    }
                 }
 
                 if (player.getHealthHearts() <= 0) {
@@ -281,7 +312,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         tileMap.draw(canvas, gameCamera);
 
         //Draw game panels
-        performance.draw(canvas);
+        //performance.draw(canvas);
+        gameScore.drawScore(canvas);
         buttonLeft.draw(canvas);
         buttonRight.draw(canvas);
         buttonJump.draw(canvas);
@@ -387,9 +419,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     // If collision is from top then the enemy is dead
                     if (enemy.getDamageable() && (enemyRect.top + SpriteSheet.SPRITE_HEIGHT_PIXELS/2) >= playerRect.bottom) {
                         deadEnemies.add(enemy);
-
                         // PLayer gets points for every enemy they kill
+                        //Log.d("Game.java", "enemy score: " + enemy.getScorePoints());
+                        //Log.d("Game.java", "player score: " + player.getScore());
                         player.setScore(player.getScore() + enemy.getScorePoints());
+                        //Log.d("Game.java", "player score after: " + player.getScore());
                     }
                     // Otherwise player is hurt and gets invincibility frames
                     else if (iFrames == 0) {

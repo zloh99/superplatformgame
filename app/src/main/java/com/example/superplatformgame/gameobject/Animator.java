@@ -113,7 +113,7 @@ public class Animator {
             sprite.drawWolfRight(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 35 //remember to add the reference to gameCamera when collision and levels are done
+                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 10 //remember to add the reference to gameCamera when collision and levels are done
             );
         } else if (enemy instanceof Saw) {
             //Log.d("Animator.java", "SawRight");
@@ -129,7 +129,7 @@ public class Animator {
             sprite.drawSawRight(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth()/2, //remember to add the reference to gameCamera when collision and levels are done
-                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 35 //remember to add the reference to gameCamera when collision and levels are done
+                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 10 //remember to add the reference to gameCamera when collision and levels are done
             );
         } else if (enemy instanceof Bird) {
             sprite.drawBirdRight(
@@ -146,19 +146,19 @@ public class Animator {
             sprite.drawWolfLeft(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth() / 2, //remember to add the reference to gameCamera when collision and levels are done
-                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 35//remember to add the reference to gameCamera when collision and levels are done
+                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 10//remember to add the reference to gameCamera when collision and levels are done
             );
         } else if (enemy instanceof Saw) {
             sprite.drawSawLeft(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth() / 2, //remember to add the reference to gameCamera when collision and levels are done
-                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 35 //remember to add the reference to gameCamera when collision and levels are done
+                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 10 //remember to add the reference to gameCamera when collision and levels are done
             );
         } else if (enemy instanceof Bird) {
             sprite.drawBirdLeft(
                     canvas,
                     (int) gameCamera.gameToDisplayCoordinatesX(enemy.getPositionX()) - sprite.getWidth() / 2, //remember to add the reference to gameCamera when collision and levels are done
-                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 - 35 //remember to add the reference to gameCamera when collision and levels are done
+                    (int) gameCamera.gameToDisplayCoordinatesY(enemy.getPositionY()) - sprite.getHeight()/2 //remember to add the reference to gameCamera when collision and levels are done
             );
         }
     }
@@ -175,11 +175,11 @@ public class Animator {
 
     private void toggleIdxMovingFrameRightEnemy() {
         //every update loop, if enemy is moving, then alternate between 2 different frames
-        if (idxMovingFrameEnemy == 0) {
-            idxMovingFrameEnemy = 1;
+        if (idxMovingFrameEnemy == 1) {
+            idxMovingFrameEnemy = 2;
         }
         else
-            idxMovingFrameEnemy = 0;
+            idxMovingFrameEnemy = 1;
     }
 
     public void drawEnemy(Canvas canvas, GameCamera gameCamera, Enemy enemy) {
