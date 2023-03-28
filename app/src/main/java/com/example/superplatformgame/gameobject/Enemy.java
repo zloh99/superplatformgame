@@ -91,7 +91,7 @@ public class Enemy extends Hitbox {
             velocityX = -velocityX;
         }
 
-        //Log.d("Player.java", "VelocityX: " + velocityX + ", VelocityY: " + velocityY);
+        //Log.d("Enemy.java", "VelocityX: " + velocityX);
 
         //apply gravity
         velocityY += gravity;

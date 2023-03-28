@@ -1,5 +1,7 @@
 package com.example.superplatformgame.gameobject;
 
+import android.util.Log;
+
 import com.example.superplatformgame.GameCamera;
 import com.example.superplatformgame.map.Tilemap;
 
@@ -34,23 +36,25 @@ public class EnemyState extends HitboxState {
             case STARTED_MOVING_LEFT:
                 if (enemy.velocityX > 0) {
                     state = HitboxState.State.IS_MOVING_RIGHT;
-                    //Log.d("PlayerState.java", "IS_MOVING_RIGHT");
                 }
                 else if (enemy.velocityX < 0) {
                     state = HitboxState.State.IS_MOVING_LEFT;
-                    //Log.d("PlayerState.java", "IS_MOVING_LEFT");
                 }
                 break;
             case IS_MOVING_LEFT:
+                //Log.d("EnemyState.java", "IS_MOVING_LEFT");
                 if (enemy.velocityX == 0) {
                     state = HitboxState.State.NOT_MOVING_LEFT;
-                    //Log.d("PlayerState.java", "NOT_MOVING_LEFT");
+                } else if (enemy.velocityX >= 0) {
+                    state = HitboxState.State.IS_MOVING_RIGHT;
                 }
                 break;
             case IS_MOVING_RIGHT:
+                //Log.d("EnemyState.java", "IS_MOVING_RIGHT");
                 if (enemy.velocityX == 0) {
                     state = HitboxState.State.NOT_MOVING_RIGHT;
-                    //Log.d("PlayerState.java", "NOT_MOVING_RIGHT");
+                } else if (enemy.velocityX <= 0) {
+                    state = HitboxState.State.IS_MOVING_LEFT;
                 }
                 break;
             default:
