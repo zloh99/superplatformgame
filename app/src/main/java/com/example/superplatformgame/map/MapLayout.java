@@ -113,8 +113,23 @@ public class MapLayout {
         try {
             if (layout[y][x] < 1) {
                 return false;
+            } else if (layout[y][x] == 3) {
+                return false;
             } else {
                 return true;
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //do nothing
+        }
+        return false;
+    }
+
+    public boolean atSpaceship(int x, int y) {
+        try {
+            if (layout[y][x] == 3) {
+                return true;
+            } else {
+                return false;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             //do nothing
