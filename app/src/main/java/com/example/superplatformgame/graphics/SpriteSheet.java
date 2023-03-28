@@ -15,21 +15,43 @@ import com.example.superplatformgame.R;
  * The sprite object is then returned to the Player object, which then draws it to the screen
  */
 public class SpriteSheet {
+
+    public static final int TILE_SCALE_FACTOR = 5;
     public static final int SPRITE_WIDTH_PIXELS = 96;
     public static final int SPRITE_HEIGHT_PIXELS = 120;
+
+    public static final int ENEMY_WIDTH_PIXELS = 32 * TILE_SCALE_FACTOR;
+
+    public static final int ENEMY_HEIGHT_PIXELS = 32 * TILE_SCALE_FACTOR;
     public static final int SKYBOX_WIDTH_PIXELS = 256;
     public static final int SKYBOX_HEIGHT_PIXELS = 128;
 
     public static final int GRASSTILES_WIDTH_PIXELS = 48;
 
     public static final int GRASSTILES_HEIGHT_PIXELS = 32;
-
-    public static final int TILE_SCALE_FACTOR = 5;
     public static final int TILE_WIDTH_PIXELS = GRASSTILES_WIDTH_PIXELS * TILE_SCALE_FACTOR;
     public static final int TILE_HEIGHT_PIXELS = GRASSTILES_HEIGHT_PIXELS * TILE_SCALE_FACTOR;
+    private Bitmap scaledSawBitmapLeft;
+    private Bitmap scaledSawBitmapRight;
+    private Bitmap scaledBirdBitmapLeft;
+    private Bitmap scaledBirdBitmapRight;
+    private Bitmap scaledWolfBitmapRight;
+    private Bitmap scaledWolfBitmapLeft;
     //bitmap = 2d array of pixels, with each pixel having 3 values: R, G, and B
     private Bitmap playerBitmapRight;
     private Bitmap playerBitmapLeft;
+
+    private Bitmap wolfBitmapRight;
+
+    private Bitmap wolfBitmapLeft;
+
+    private Bitmap sawBitmapRight;
+
+    private Bitmap sawBitmapLeft;
+
+    private Bitmap birdBitmapRight;
+
+    private Bitmap birdBitmapLeft;
     private Bitmap skyBitmap;;
     private Bitmap scaledSkyBitmap;
 
@@ -46,6 +68,36 @@ public class SpriteSheet {
         this.matrix = new Matrix();
         matrix.preScale(-1, 1);
         playerBitmapLeft = Bitmap.createBitmap(playerBitmapRight, 0, 0, playerBitmapRight.getWidth(), playerBitmapRight.getHeight(), matrix, true);
+
+        //load bitmap for the wolf enemy sprite when facing right. load another of the same bitmap and reverse it, for wolf sprite facing left.
+        BitmapFactory.Options bitmapOptionsWolf = new BitmapFactory.Options();
+        bitmapOptionsWolf.inScaled = false;
+        wolfBitmapRight = BitmapFactory.decodeResource(context.getResources(), R.drawable.wolf, bitmapOptionsWolf);
+        scaledWolfBitmapRight = scaleBitmap(wolfBitmapRight,TILE_SCALE_FACTOR*wolfBitmapRight.getHeight(), TILE_SCALE_FACTOR*wolfBitmapRight.getWidth());
+        this.matrix = new Matrix();
+        matrix.preScale(-1, 1);
+        wolfBitmapLeft = Bitmap.createBitmap(wolfBitmapRight, 0, 0, wolfBitmapRight.getWidth(), wolfBitmapRight.getHeight(), matrix, true);
+        scaledWolfBitmapLeft = scaleBitmap(wolfBitmapLeft,TILE_SCALE_FACTOR*wolfBitmapLeft.getHeight(), TILE_SCALE_FACTOR*wolfBitmapLeft.getWidth());
+
+        //load bitmap for the saw enemy sprite when facing right. load another of the same bitmap and reverse it, for saw sprite facing left.
+        BitmapFactory.Options bitmapOptionsSaw = new BitmapFactory.Options();
+        bitmapOptionsSaw.inScaled = false;
+        sawBitmapRight = BitmapFactory.decodeResource(context.getResources(), R.drawable.saw, bitmapOptionsSaw);
+        scaledSawBitmapRight = scaleBitmap(sawBitmapRight,TILE_SCALE_FACTOR*sawBitmapRight.getHeight(), TILE_SCALE_FACTOR*sawBitmapRight.getWidth());
+        this.matrix = new Matrix();
+        matrix.preScale(-1, 1);
+        sawBitmapLeft = Bitmap.createBitmap(sawBitmapRight, 0, 0, sawBitmapRight.getWidth(), sawBitmapRight.getHeight(), matrix, true);
+        scaledSawBitmapLeft = scaleBitmap(sawBitmapLeft,TILE_SCALE_FACTOR*sawBitmapLeft.getHeight(), TILE_SCALE_FACTOR*sawBitmapLeft.getWidth());
+
+        //load bitmap for the bird enemy sprite when facing right. load another of the same bitmap and reverse it, for bird enemy sprite facing left.
+        BitmapFactory.Options bitmapOptionsBird = new BitmapFactory.Options();
+        bitmapOptionsBird.inScaled = false;
+        birdBitmapRight = BitmapFactory.decodeResource(context.getResources(), R.drawable.bird, bitmapOptionsBird);
+        scaledBirdBitmapRight = scaleBitmap(birdBitmapRight,TILE_SCALE_FACTOR*birdBitmapRight.getHeight(), TILE_SCALE_FACTOR*birdBitmapRight.getWidth());
+        this.matrix = new Matrix();
+        matrix.preScale(-1, 1);
+        birdBitmapLeft = Bitmap.createBitmap(birdBitmapRight, 0, 0, birdBitmapRight.getWidth(), birdBitmapRight.getHeight(), matrix, true);
+        scaledBirdBitmapLeft = scaleBitmap(birdBitmapLeft,TILE_SCALE_FACTOR*birdBitmapLeft.getHeight(), TILE_SCALE_FACTOR*birdBitmapLeft.getWidth());
 
         //create and scale sky bitmap to 10 times larger so it can cover the whole screen
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -76,11 +128,42 @@ public class SpriteSheet {
         return spriteArray;
     }
 
+    public Sprite[] getEnemySpriteArray() {
+        //method for indexing and selecting parts of the bitmap for the enemy sprite
+        Sprite[] spriteArray = new Sprite[3];
+        spriteArray[0] = new Sprite(this, new Rect(0*ENEMY_WIDTH_PIXELS, 0, 1*ENEMY_WIDTH_PIXELS, ENEMY_HEIGHT_PIXELS));
+        spriteArray[1] = new Sprite(this, new Rect(1*ENEMY_WIDTH_PIXELS, 0, 2*ENEMY_WIDTH_PIXELS, ENEMY_HEIGHT_PIXELS));
+        spriteArray[2] = new Sprite(this, new Rect(2*ENEMY_WIDTH_PIXELS, 0, 3*ENEMY_WIDTH_PIXELS, ENEMY_HEIGHT_PIXELS));
+        return spriteArray;
+    }
+
     public Bitmap getBitmapRight() {
         return playerBitmapRight;
     }
     public Bitmap getBitmapLeft() {
         return playerBitmapLeft;
+    }
+
+    public Bitmap getWolfBitmapRight() {
+        return scaledWolfBitmapRight;
+    }
+    public Bitmap getWolfBitmapLeft() {
+        return scaledWolfBitmapLeft;
+    }
+
+    public Bitmap getSawBitmapRight() {
+        return scaledSawBitmapRight;
+        //scaledSawBitmapRight;
+    }
+    public Bitmap getSawBitmapLeft() {
+        return scaledSawBitmapLeft;
+    }
+
+    public Bitmap getBirdBitmapRight() {
+        return scaledBirdBitmapRight;
+    }
+    public Bitmap getBirdBitmapLeft() {
+        return scaledBirdBitmapLeft;
     }
 
     //get methods for skybox bitmap

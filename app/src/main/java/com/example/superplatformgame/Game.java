@@ -9,17 +9,16 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.superplatformgame.gameobject.Animator;
+import com.example.superplatformgame.gameobject.Bird;
 import com.example.superplatformgame.gameobject.Enemy;
-import com.example.superplatformgame.gameobject.GameObject;
 import com.example.superplatformgame.gameobject.HealthHearts;
 import com.example.superplatformgame.gameobject.Player;
-import com.example.superplatformgame.gameobject.PlayerState;
+import com.example.superplatformgame.gameobject.Saw;
+import com.example.superplatformgame.gameobject.Wolf;
 import com.example.superplatformgame.gamepanel.ButtonJump;
 import com.example.superplatformgame.gamepanel.ButtonLeft;
 import com.example.superplatformgame.gamepanel.ButtonRight;
@@ -30,7 +29,6 @@ import com.example.superplatformgame.map.MapLayout;
 import com.example.superplatformgame.map.Tilemap;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -80,7 +78,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Initialise game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
-        Animator animator = new Animator(spriteSheet.getPlayerSpriteArray());
+        Animator animator = new Animator(spriteSheet.getPlayerSpriteArray(), spriteSheet.getEnemySpriteArray());
         player = new Player(context, buttonLeft, buttonRight, buttonJump, 1000, 200, 32, animator);
 
         healthHearts = new HealthHearts(context, player);
@@ -98,10 +96,25 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Generate enemies
         int numEnemies = 2;
+        double probWolves = 0.0;
+        double probBirds = 1; //0.3
+        double probSaws = 0.0; //0.2
+
         for (int i = 0; i < numEnemies; i++) {
-            Enemy e = new Enemy(context, (double)i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
-                    0, animator);
-            enemyList.add(e);
+            double probability = Math.random();
+            if (probability < probWolves) {
+                Enemy e = new Wolf(context, (double) i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
+                        0, animator);
+                enemyList.add(e);
+            } else if (probability-probWolves < probBirds) {
+                Enemy e = new Bird(context, (double) i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
+                        0, animator);
+                enemyList.add(e);
+            } else {
+                Enemy e = new Saw(context, (double) i * 600, 590, ThreadLocalRandom.current().nextDouble(200, 400),
+                        0, animator);
+                enemyList.add(e);
+            }
         }
 
         setFocusable(true);
@@ -124,7 +137,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Initialise game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
-        Animator animator = new Animator(spriteSheet.getPlayerSpriteArray());
+        Animator animator = new Animator(spriteSheet.getPlayerSpriteArray(), spriteSheet.getEnemySpriteArray());
         player = new Player(context, buttonLeft, buttonRight, buttonJump, 1000, 200, 32, animator);
 
         healthHearts = new HealthHearts(context, player);
@@ -316,23 +329,41 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         List<Enemy> deadEnemies = new ArrayList<>();
         Rect playerRect = player.getFuturePlayerRect(gameCamera);
+
+        int iFrames = player.getIFrames();
+
+        // If player has invincibility frames then # of those frames are decremented
+        if (iFrames > 0) {
+            player.setIFrames(iFrames - 1);
+        }
+
         enemyList.forEach(enemy -> {
+            // Check to see if enemy has fallen off, so tracking can stop
             if(enemy.getPositionY() > gameCamera.getMapBottomY()) {
                 deadEnemies.add(enemy);
             }
             else {
                 Rect enemyRect = enemy.getFuturePlayerRect(gameCamera);
-                Log.d("Game.java", "Enemy top: " + gameCamera.gameToDisplayCoordinatesY(enemyRect.top) + "  " + enemy.getPositionY() + "  " + playerRect.bottom);
+
+                // Check for enemy collision
                 if (enemyRect.intersect(playerRect)) {
-                    if ((enemyRect.top + SpriteSheet.SPRITE_HEIGHT_PIXELS/2) >= playerRect.bottom) {
+                    // If collision is from top then the enemy is dead
+                    if (enemy.getDamageable() && (enemyRect.top + SpriteSheet.SPRITE_HEIGHT_PIXELS/2) >= playerRect.bottom) {
                         deadEnemies.add(enemy);
-                    } else {
+
+                        // PLayer gets points for every enemy they kill
+                        player.setScore(player.getScore() + enemy.getScorePoints());
+                    }
+                    // Otherwise player is hurt and gets invincibility frames
+                    else if (iFrames == 0) {
                         player.setHealthHearts(player.getHealthHearts()-1);
+                        player.setIFrames(10);
                     }
                 }
             }
         });
 
+        // Dead enemies are removed from tracking
         deadEnemies.forEach(enemy -> enemyList.remove(enemy));
 
         //update game panel

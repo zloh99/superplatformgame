@@ -42,6 +42,66 @@ public class Sprite {
         );
     }
 
+    public void drawWolfRight(Canvas canvas, int x, int y) {
+        //method to draw player sprite when it is facing right
+        canvas.drawBitmap(
+                spriteSheet.getWolfBitmapRight(),
+                rect,
+                new Rect(x, y, x+getWidth(), y+getHeight()),
+                null
+        );
+    }
+
+    public void drawWolfLeft(Canvas canvas, int x, int y) {
+        //method to draw player sprite when it is facing left
+        canvas.drawBitmap(
+                spriteSheet.getWolfBitmapLeft(),
+                rect,
+                new Rect(x, y, x+getWidth(), y+getHeight()),
+                null
+        );
+    }
+
+    public void drawSawRight(Canvas canvas, int x, int y) {
+        //method to draw player sprite when it is facing right
+        canvas.drawBitmap(
+                spriteSheet.getSawBitmapRight(),
+                rect,
+                new Rect(x, y, x+getWidth(), y+getHeight()),
+                null
+        );
+    }
+
+    public void drawSawLeft(Canvas canvas, int x, int y) {
+        //method to draw player sprite when it is facing left
+        canvas.drawBitmap(
+                spriteSheet.getSawBitmapLeft(),
+                rect,
+                new Rect(x, y, x+getWidth(), y+getHeight()),
+                null
+        );
+    }
+
+    public void drawBirdRight(Canvas canvas, int x, int y) {
+        //method to draw player sprite when it is facing right
+        canvas.drawBitmap(
+                spriteSheet.getBirdBitmapRight(),
+                rect,
+                new Rect(x, y, x+getWidth(), y+getHeight()),
+                null
+        );
+    }
+
+    public void drawBirdLeft(Canvas canvas, int x, int y) {
+        //method to draw player sprite when it is facing left
+        canvas.drawBitmap(
+                spriteSheet.getBirdBitmapLeft(),
+                rect,
+                new Rect(x, y, x+getWidth(), y+getHeight()),
+                null
+        );
+    }
+
     public int getWidth() {
         return rect.width();
     }
