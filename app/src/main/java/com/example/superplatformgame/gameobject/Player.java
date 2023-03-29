@@ -31,7 +31,7 @@ public class Player extends Hitbox {
     public static final double MAX_SPEED = SPEED_PIXELS_PER_SECOND / GameLoop.MAX_UPS; //pixels/s divided by updates/s = pixels/update
     public static final double GRAVITY = 3; // acceleration due to gravity
     public static final double BOUNCE_FACTOR = 0.7; // scale of how much the player bounces off the walls
-    public static final double JUMP_SPEED = 60; //how high player can jump
+    public static final double JUMP_SPEED = 70; //how high player can jump
     private final ButtonLeft buttonLeft;
     private final ButtonRight buttonRight;
     private final ButtonJump buttonJump;
