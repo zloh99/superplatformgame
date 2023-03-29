@@ -85,7 +85,7 @@ public class Enemy extends Hitbox {
         //update player velocity based on which button is pressed
         if(tileMap.isColliding(this, gameCamera, true, false)) {
             positionX = previousPositionX;
-            velocityX = -velocityX * BOUNCE_FACTOR;
+            velocityX = -velocityX;
         } else if (this.positionX > this.maxPositionX || this.positionX < this.minPositionX) {
             positionX = previousPositionX;
             velocityX = -velocityX;

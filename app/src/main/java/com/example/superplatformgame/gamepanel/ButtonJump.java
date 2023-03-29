@@ -39,7 +39,7 @@ public class ButtonJump extends Buttons{
         //load in bitmap for the jump button
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inScaled = false;
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.button_jump, bitmapOptions);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.button_jump2, bitmapOptions);
 
         //initialise and draw an invisible region over the button for the purposes of detecting touch events on it.
         buttonPosition = new Rect((int) positionX, (int) positionY, (int) (positionX+width), (int) (positionY+height));

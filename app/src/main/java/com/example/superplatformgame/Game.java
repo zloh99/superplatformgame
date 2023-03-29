@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,6 +32,7 @@ import com.example.superplatformgame.map.Tilemap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -39,6 +41,9 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
+    public static final int NO_OF_ENEMIES = 5;
+    public static final double WOLF_PROB = 0.4;
+    public static final double BIRD_PROB = 0.6;
     private Player player; //player object
     private GameLoop gameLoop; //game loop
     private Performance performance; //game panel object that shows average UPS and FPS
@@ -58,6 +63,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private GameOver gameOver; // check game over
     private GameWin gameWin;
     private GameScore gameScore;
+    private Typeface typeFace;
 
 
 
@@ -74,6 +80,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Initialise game panels (all graphical objects that do not interact with any game objects)
         //performance = new Performance(context, gameLoop);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            typeFace = context.getResources().getFont(R.font.minecraft);
+        }
         buttonLeft = new ButtonLeft(context, 100, 850, 150, 150);
         buttonRight = new ButtonRight(context, 300, 850, 150, 150);
         buttonJump = new ButtonJump(context, 1850, 860, 140, 140);
@@ -101,23 +110,25 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         tileMap = new Tilemap(spriteSheet);
 
         //Generate enemies
-        int numEnemies = 2;
-        double probWolves = 0.6;
-        double probBirds = 0.4;
+        int numEnemies = NO_OF_ENEMIES;
+        double probWolves = WOLF_PROB;
+        double probBirds = BIRD_PROB;
         double probSaws = 0.0;
+
+        Random randomHeight = new Random();
 
         for (int i = 0; i < numEnemies; i++) {
             double probability = Math.random();
             if (probability < probWolves) {
-                Enemy e = new Wolf(context, (double) i * 800 + 500, 500, ThreadLocalRandom.current().nextDouble(200, 400),
+                Enemy e = new Wolf(context, (double) i * 2000, 200, ThreadLocalRandom.current().nextDouble(200, 400),
                         10, animator);
                 enemyList.add(e);
             } else if (probability-probWolves < probBirds) {
-                Enemy e = new Bird(context, (double) i * 800 + 500, 300, ThreadLocalRandom.current().nextDouble(200, 400),
+                Enemy e = new Bird(context, (double) i * 2400, ThreadLocalRandom.current().nextDouble(100, 300), ThreadLocalRandom.current().nextDouble(200, 400),
                         10, animator);
                 enemyList.add(e);
             } else {
-                Enemy e = new Saw(context, (double) i * 600 + 500, 500, ThreadLocalRandom.current().nextDouble(200, 400),
+                Enemy e = new Saw(context, (double) i * 600, 500, ThreadLocalRandom.current().nextDouble(200, 400),
                         0, animator);
                 enemyList.add(e);
             }
@@ -159,6 +170,30 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Initialise game graphics
         skyBoxList.add(new SkyBox(spriteSheet));
         tileMap = new Tilemap(spriteSheet);
+
+
+        //Generate enemies
+        int numEnemies = NO_OF_ENEMIES;
+        double probWolves = WOLF_PROB;
+        double probBirds = BIRD_PROB;
+        double probSaws = 0.0;
+
+        for (int i = 0; i < numEnemies; i++) {
+            double probability = Math.random();
+            if (probability < probWolves) {
+                Enemy e = new Wolf(context, (double) i * 2000, 200, ThreadLocalRandom.current().nextDouble(200, 400),
+                        10, animator);
+                enemyList.add(e);
+            } else if (probability-probWolves < probBirds) {
+                Enemy e = new Bird(context, (double) i * 2400, ThreadLocalRandom.current().nextDouble(100, 300), ThreadLocalRandom.current().nextDouble(200, 400),
+                        10, animator);
+                enemyList.add(e);
+            } else {
+                Enemy e = new Saw(context, (double) i * 600, 500, ThreadLocalRandom.current().nextDouble(200, 400),
+                        0, animator);
+                enemyList.add(e);
+            }
+        }
 
         setFocusable(true);
     }
@@ -313,7 +348,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Draw game panels
         //performance.draw(canvas);
-        gameScore.drawScore(canvas);
+        gameScore.drawScore(canvas, typeFace);
         buttonLeft.draw(canvas);
         buttonRight.draw(canvas);
         buttonJump.draw(canvas);
@@ -321,20 +356,23 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //if player's health = 0, then draw game over screen
         if(player.getHealthHearts() <= 0) {
-            gameOver.draw(canvas);
+            gameOver.draw(canvas, typeFace);
         }
 
         //if spaceship reached, draw game win screen
         if(tileMap.atSpaceship(player, gameCamera, true, false) || tileMap.atSpaceship(player, gameCamera, false, true)) {
-            gameWin.draw(canvas);
+            gameWin.draw(canvas, typeFace);
         }
 
     }
 
     public void update() {
+        List<Enemy> deadEnemies = new ArrayList<>();
 
         // Stop updating the game if player is dead
         if(player.getHealthHearts() <= 0) {
+            enemyList.forEach(enemy -> {deadEnemies.add(enemy);});
+            deadEnemies.forEach(enemy -> enemyList.remove(enemy));
             gameLoop.stopLoop();
             return;
         }
@@ -396,7 +434,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             player.setHealthHearts(0);
         }
 
-        List<Enemy> deadEnemies = new ArrayList<>();
         Rect playerRect = player.getFuturePlayerRect(gameCamera);
 
         int iFrames = player.getIFrames();
@@ -433,6 +470,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         });
+
+
 
         // Dead enemies are removed from tracking
         deadEnemies.forEach(enemy -> enemyList.remove(enemy));

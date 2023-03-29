@@ -11,4 +11,5 @@
     <color name="player">#00FF00</color>
     <color name="button">#CFCFCF</color>
     <color name="gameOver">#F44336</color>
+    <color name="gameWin">#72FF0E</color>
 </resources>
