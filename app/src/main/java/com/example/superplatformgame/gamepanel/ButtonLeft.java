@@ -39,7 +39,7 @@ public class ButtonLeft extends Buttons{
         //initialise bitmap
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inScaled = false;
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.button_left, bitmapOptions);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.button_left2, bitmapOptions);
 
         //initialise rect and region object to detect touch events
         buttonPosition = new Rect((int) positionX, (int) positionY, (int) (positionX+width), (int) (positionY+height));

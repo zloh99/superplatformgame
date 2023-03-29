@@ -1,9 +1,12 @@
 package com.example.superplatformgame;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 
 import androidx.core.content.ContextCompat;
 
@@ -15,37 +18,41 @@ public class GameOver {
 
     private boolean isPressed; //for the game restart button
     private Rect rect;
+    private Bitmap bitmap;
+    private Rect buttonPosition;
 
     public GameOver(Context context) {
         this.context = context;
+
+        //load button bitmap
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inScaled = false;
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.restart_button, bitmapOptions);
+
+        //initialise invisible rectangle to detect touch
+        float xContinue = 620;
+        float yContinue = 400;
+        buttonPosition = new Rect((int) xContinue, (int) yContinue, (int) (xContinue + bitmap.getWidth()), (int) (yContinue + bitmap.getHeight()));
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, Typeface typeFace) {
         //Draw "Game Over" string
         String text = "Game Over";
-        float x = 800;
+        float x = 600;
         float y = 200;
         Paint paint = new Paint();
         int color = ContextCompat.getColor(context, R.color.gameOver);
         paint.setColor(color);
         float textSize = 150;
         paint.setTextSize(textSize);
+        paint.setTypeface(typeFace);
         canvas.drawText(text, x, y, paint);
 
         //Draw restart button
-        String textContinue = "Continue?";
-        float xContinue = 800;
-        float yContinue = 400;
-        Paint paintContinue = new Paint();
-        paintContinue.setColor(color);
-        paintContinue.setTextSize(100);
-        canvas.drawText(textContinue, xContinue, yContinue, paintContinue);
+        canvas.drawBitmap(bitmap, new Rect(0, 0, 768, 128), buttonPosition,
+                null);
         //draw invisible rectangle over the continue text to detect touch
-        rect = new Rect((int) xContinue,
-                (int) (yContinue - paintContinue.getTextSize()),
-                (int) (xContinue + paintContinue.measureText(textContinue)),
-                (int) yContinue);
-        //canvas.drawRect(rect, paintContinue);
+        rect = buttonPosition;
     }
 
     public boolean isPressed(double touchX, double touchY) {
