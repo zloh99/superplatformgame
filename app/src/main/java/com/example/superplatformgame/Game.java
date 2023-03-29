@@ -41,7 +41,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
-    public static final int NO_OF_ENEMIES = 5;
+    public static final int NO_OF_ENEMIES = 2;
     public static final double WOLF_PROB = 0.4;
     public static final double BIRD_PROB = 0.6;
     private Player player; //player object
@@ -173,6 +173,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
 
         //Generate enemies
+        Log.d("Game.java", "Reset: enemies spawned");
         int numEnemies = NO_OF_ENEMIES;
         double probWolves = WOLF_PROB;
         double probBirds = BIRD_PROB;
