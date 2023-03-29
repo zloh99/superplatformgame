@@ -29,9 +29,9 @@ public class MapLayout {
         int[] winning_tile = {0, 0, 0, 3, 2, 1, 1, 1};
 
         if (mapType == Tilemap.MapType.GRASS_MAP) {
-            int[][] untransposedMatrix = new int[25][]; // set the map distance from start to end as 25 blocks wide.
+            int[][] untransposedMatrix = new int[35][]; // set the map distance from start to end as 25 blocks wide.
             for (int i = 0; i < untransposedMatrix.length; i++) {
-                if (i < 7 || i > 17) {
+                if (i < 7 || i > 27) {
                     untransposedMatrix[i] = ground.clone();
                 } else {
                     untransposedMatrix[i] = new int[]{0, 0, 0, 0, 0, 0, 0, 0};

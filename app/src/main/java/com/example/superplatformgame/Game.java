@@ -41,9 +41,10 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
+
     public static final int NO_OF_ENEMIES = 2;
     public static final double WOLF_PROB = 0.4;
-    public static final double BIRD_PROB = 0.6;
+    public static final double BIRD_PROB = 0.4;
     private Player player; //player object
     private GameLoop gameLoop; //game loop
     private Performance performance; //game panel object that shows average UPS and FPS
@@ -117,22 +118,22 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         Random randomHeight = new Random();
 
-        for (int i = 0; i < numEnemies; i++) {
-            double probability = Math.random();
-            if (probability < probWolves) {
-                Enemy e = new Wolf(context, (double) i * 2000, 200, ThreadLocalRandom.current().nextDouble(200, 400),
-                        10, animator);
-                enemyList.add(e);
-            } else if (probability-probWolves < probBirds) {
-                Enemy e = new Bird(context, (double) i * 2400, ThreadLocalRandom.current().nextDouble(100, 300), ThreadLocalRandom.current().nextDouble(200, 400),
-                        10, animator);
-                enemyList.add(e);
-            } else {
-                Enemy e = new Saw(context, (double) i * 600, 500, ThreadLocalRandom.current().nextDouble(200, 400),
-                        0, animator);
-                enemyList.add(e);
-            }
-        }
+//        for (int i = 0; i < numEnemies; i++) {
+//            double probability = Math.random();
+//            if (probability < probWolves) {
+//                Enemy e = new Wolf(context, (double) i * 2000, 200, ThreadLocalRandom.current().nextDouble(200, 400),
+//                        10, animator);
+//                enemyList.add(e);
+//            } else if (probability-probWolves < probBirds) {
+//                Enemy e = new Bird(context, (double) i * 2400, ThreadLocalRandom.current().nextDouble(100, 300), ThreadLocalRandom.current().nextDouble(200, 400),
+//                        10, animator);
+//                enemyList.add(e);
+//            } else {
+//                Enemy e = new Saw(context, (double) i * 600, 500, ThreadLocalRandom.current().nextDouble(200, 400),
+//                        0, animator);
+//                enemyList.add(e);
+//            }
+//        }
 
         setFocusable(true);
     }
@@ -191,7 +192,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 enemyList.add(e);
             } else {
                 Enemy e = new Saw(context, (double) i * 600, 500, ThreadLocalRandom.current().nextDouble(200, 400),
-                        0, animator);
+                        10, animator);
                 enemyList.add(e);
             }
         }
